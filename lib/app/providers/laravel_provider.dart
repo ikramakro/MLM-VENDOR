@@ -19,6 +19,7 @@ import '../models/award_model.dart';
 import '../models/booking_model.dart';
 import '../models/booking_status_model.dart';
 import '../models/category_model.dart';
+import '../models/certificate_edit.dart';
 import '../models/certificates_model.dart';
 import '../models/custom_page_model.dart';
 import '../models/e_provider_model.dart';
@@ -26,6 +27,7 @@ import '../models/e_provider_subscription_model.dart';
 import '../models/e_provider_type_model.dart';
 import '../models/e_service_model.dart';
 import '../models/experience_model.dart';
+import '../models/experience_model_View.dart';
 import '../models/faq_category_model.dart';
 import '../models/faq_model.dart';
 import '../models/gallery_model.dart';
@@ -893,14 +895,12 @@ class LaravelApiClient extends GetxService with ApiClient {
     var _queryParameters = {
       'api_token': authService.apiToken,
     };
-    Uri _uri = getApiBaseUri("del_album_img/$Id")
+    Uri _uri = getApiBaseUri("del_image/$Id")
         .replace(queryParameters: _queryParameters);
 
     var response = await _httpClient.getUri(_uri, options: _optionsCache);
     if (response.data['success'] == true) {
       return true;
-      Get.showSnackbar(
-          Ui.SuccessSnackBar(message: "Image SuccessFully Removed"));
     } else {
       throw new Exception(response.data['message']);
     }
@@ -1091,6 +1091,48 @@ class LaravelApiClient extends GetxService with ApiClient {
       return response.data['data']
           .map<Experience>((obj) => Experience.fromJson(obj))
           .toList();
+    } else {
+      throw new Exception(response.data['message']);
+    }
+  }
+
+  Future<List<ExperienceView>> getEProviderCertificate(
+      String eProviderId) async {
+    var _queryParameters = {
+      'search': 'e_provider_id:$eProviderId',
+      'searchFields': 'e_provider_id:=',
+      'orderBy': 'updated_at',
+      'sortedBy': 'desc',
+    };
+    Uri _uri =
+        getApiBaseUri("experiences").replace(queryParameters: _queryParameters);
+
+    var response = await _httpClient.getUri(_uri, options: _optionsNetwork);
+    if (response.data['success'] == true) {
+      return response.data['data']
+          .map<ExperienceView>((obj) => ExperienceView.fromJson(obj))
+          .toList();
+    } else {
+      throw new Exception(response.data['message']);
+    }
+  }
+
+  Future<bool> delEProviderCertificate(
+      String certID, String eProviderId) async {
+    var _queryParameters = {
+      'api_token': authService.apiToken,
+      'search': 'e_provider_id:$eProviderId',
+      'searchFields': 'e_provider_id:=',
+      'orderBy': 'updated_at',
+      'sortedBy': 'desc',
+    };
+    Uri _uri = getApiBaseUri("provider/experiences/$certID?")
+        .replace(queryParameters: _queryParameters);
+
+    var response = await _httpClient.deleteUri(_uri, options: _optionsNetwork);
+    print("check this del response $response");
+    if (response.data['success'] == true) {
+      return response.data['success'];
     } else {
       throw new Exception(response.data['message']);
     }
@@ -1628,7 +1670,8 @@ class LaravelApiClient extends GetxService with ApiClient {
         data: portfolioData.toJson(), options: _optionsNetwork);
     if (response.data['success'] == true) {
       print("this is response of portfolio successfull");
-      Get.showSnackbar(Ui.SuccessSnackBar(message: "Uploaded Successfully"));
+      Get.showSnackbar(
+          Ui.SuccessSnackBar(message: "Uploaded Portfolio Successfully"));
     } else {
       throw new Exception(response.data['message']);
     }
@@ -1664,7 +1707,8 @@ class LaravelApiClient extends GetxService with ApiClient {
         data: portfolioData.toJson(), options: _optionsNetwork);
     if (response.data['success'] == true) {
       print("this is response of portfolio successfull");
-      Get.showSnackbar(Ui.SuccessSnackBar(message: "Uploaded Successfully"));
+      Get.showSnackbar(
+          Ui.SuccessSnackBar(message: "Uploaded Album Successfully"));
     } else {
       throw new Exception(response.data['message']);
     }
@@ -1683,6 +1727,24 @@ class LaravelApiClient extends GetxService with ApiClient {
     if (response.data['success'] == true) {
       print("this is response of portfolio successfull");
       Get.showSnackbar(Ui.SuccessSnackBar(message: "Uploaded Successfully"));
+    } else {
+      throw new Exception(response.data['message']);
+    }
+  }
+
+  Future certificateEdit(CertificateEdit certificate, String certId) async {
+    var _queryParameters = {
+      'api_token': authService.apiToken,
+    };
+
+    Uri _uri = getApiBaseUri("provider/experiences/$certId?")
+        .replace(queryParameters: _queryParameters);
+
+    var response = await _httpClient.putUri(_uri,
+        data: certificate.toJson(), options: _optionsNetwork);
+    if (response.data['success'] == true) {
+      Get.showSnackbar(
+          Ui.SuccessSnackBar(message: "Edit Certificate Successfully"));
     } else {
       throw new Exception(response.data['message']);
     }

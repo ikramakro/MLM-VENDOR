@@ -144,39 +144,56 @@ class AuthController extends GetxController {
   Future register() async {
     print("register is trigger");
     Get.focusScope.unfocus();
+
     if (registerFormKey.currentState.validate()) {
       registerFormKey.currentState.save();
-
-      String checkNum =
-          await _userRepository.checkNum(currentUser.value.phoneNumber);
-      print("status phone num $checkNum");
-      if (checkNum == "False") {
-        loading.value = true;
-        try {
-          if (Get.find<SettingsService>().setting.value.enableOtp) {
-            print("this is running first");
-            await _userRepository.sendCodeToPhone();
-            loading.value = false;
-            await Get.toNamed(Routes.PHONE_VERIFICATION);
-          } else {
-            print("this is running second");
-            await Get.find<FireBaseMessagingService>().setDeviceToken();
-            currentUser.value =
-                await _userRepository.register(currentUser.value);
-            await _userRepository.signUpWithEmailAndPassword(
-                currentUser.value.email, currentUser.value.apiToken);
-            // await SendEmail();
-
-            // loading.value = false;
-          }
-        } catch (e) {
-          Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
-        } finally {
-          loading.value = false;
-        }
+      if (currentUser.value.phoneNumber.length < 4) {
+        Get.showSnackbar(
+            Ui.defaultSnackBar(message: "Please Fill Phone Number"));
+      } else if (selectedCategory.isEmpty && eProvider.value.type == null) {
+        Get.showSnackbar(Ui.ErrorSnackBar(
+            message: "Please Select Category and eProvider".tr));
+      } else if (selectedCategory.isEmpty) {
+        Get.showSnackbar(
+            Ui.ErrorSnackBar(message: "Please Select a Category".tr));
+      } else if (eProvider.value.type == null) {
+        Get.showSnackbar(
+            Ui.ErrorSnackBar(message: "Please Select eProvider Type".tr));
       } else {
-        Get.showSnackbar(Ui.ErrorSnackBar(message: "Number already used"));
+        String checkNum =
+            await _userRepository.checkNum(currentUser.value.phoneNumber);
+        print("status phone num $checkNum");
+        if (checkNum == "False") {
+          loading.value = true;
+          try {
+            if (Get.find<SettingsService>().setting.value.enableOtp) {
+              print("this is running first");
+              await _userRepository.sendCodeToPhone();
+              loading.value = false;
+              await Get.toNamed(Routes.PHONE_VERIFICATION);
+            } else {
+              print("this is running second");
+              await Get.find<FireBaseMessagingService>().setDeviceToken();
+              currentUser.value =
+                  await _userRepository.register(currentUser.value);
+              await _userRepository.signUpWithEmailAndPassword(
+                  currentUser.value.email, currentUser.value.apiToken);
+              // await SendEmail();
+
+              // loading.value = false;
+            }
+          } catch (e) {
+            Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+          } finally {
+            loading.value = false;
+          }
+        } else {
+          Get.showSnackbar(Ui.ErrorSnackBar(message: "Number already used"));
+        }
       }
+    } else {
+      Get.showSnackbar(
+          Ui.defaultSnackBar(message: "Please Fill all Mandatory Fields"));
     }
   }
 

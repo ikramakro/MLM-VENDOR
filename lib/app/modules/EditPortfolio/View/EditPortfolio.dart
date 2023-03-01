@@ -11,20 +11,21 @@ class EditPortfolio extends GetView<EditPortfolioController> {
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: Obx(
-        () => new FloatingActionButton(
-          child: new Icon(
-              controller.editable.value == true ? Icons.delete : Icons.edit,
-              size: 28,
-              color: Get.theme.primaryColor),
-          onPressed: () => {
-            controller.editable.value == false
-                ? controller.editable.value = true
-                : controller.deletePortfolio(controller.galleries.value.id),
-            // Get.toNamed(Routes.PortfolioAlbum, preventDuplicates: false),
-            // Get.toN,
-          },
-          backgroundColor: Get.theme.colorScheme.secondary,
-        ).paddingOnly(bottom: 0),
+        () => controller.editable.value == true
+            ? SizedBox()
+            : new FloatingActionButton(
+                child: new Icon(Icons.edit,
+                    size: 28, color: Get.theme.primaryColor),
+                onPressed: () => {
+                  controller.editable.value = true,
+                  // controller.editable.value == false
+                  //     ? controller.editable.value = true
+                  //     : controller.deletePortfolio(controller.galleries.value.id),
+                  // Get.toNamed(Routes.PortfolioAlbum, preventDuplicates: false),
+                  // Get.toN,
+                },
+                backgroundColor: Get.theme.colorScheme.secondary,
+              ).paddingOnly(bottom: 0),
       ),
       appBar: AppBar(
         title: Text(

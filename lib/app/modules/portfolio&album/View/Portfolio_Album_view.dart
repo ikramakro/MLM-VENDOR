@@ -20,11 +20,56 @@ class PortfolioAndAlbumView extends GetView<AlbumViewController> {
       // ).paddingOnly(bottom: 90, right: 11),
       appBar: AppBar(
         actions: [
+          // Obx(
+          //   () => controller.selectedListPortfolio.length == 1 &&
+          //           controller.isDeletablePortfolio.isTrue
+          //       ? IconButton(
+          //           icon: new Icon(Icons.edit, color: Colors.blueAccent),
+          //           onPressed: () {
+          //             controller.isDeletablePortfolio.value = false;
+          //
+          //             controller.selectedListPortfolio.value = [];
+          //           },
+          //         )
+          //       : SizedBox(),
+          // ),
           Obx(
-            () => controller.isDeletable.isTrue
+            () => controller.selectedList.length == 1 &&
+                    controller.isDeletable.isTrue
+                ? IconButton(
+                    icon: new Icon(Icons.edit, color: Colors.blueAccent),
+                    onPressed: () {
+                      controller.isDeletable.value = false;
+
+                      print("this is album edit butn calling");
+
+                      controller.selectedList.value = [];
+                    },
+                  )
+                : SizedBox(),
+          ),
+          Obx(
+            () => controller.isDeletable.isTrue &&
+                    controller.selectedList.length > 0
                 ? IconButton(
                     icon: new Icon(Icons.delete, color: Colors.blueAccent),
-                    onPressed: () => controller.delAlbum(),
+                    onPressed: () {
+                      print("this is album delete butn calling");
+                      // controller.delExperiences();
+                      controller.isDeletable.value = false;
+                    },
+                  )
+                : SizedBox(),
+          ),
+          Obx(
+            () => controller.isDeletablePortfolio.isTrue &&
+                    controller.selectedListPortfolio.length > 0
+                ? IconButton(
+                    icon: new Icon(Icons.delete, color: Colors.blueAccent),
+                    onPressed: () {
+                      controller.deletePortfolio();
+                      controller.isDeletablePortfolio.value = false;
+                    },
                   )
                 : SizedBox(),
           )
@@ -41,6 +86,7 @@ class PortfolioAndAlbumView extends GetView<AlbumViewController> {
         ),
         elevation: 0,
       ),
+
       body: Container(
           margin: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
           padding: EdgeInsets.symmetric(horizontal: 0, vertical: 15),
@@ -105,6 +151,7 @@ class PortfolioAndAlbumView extends GetView<AlbumViewController> {
                       ),
                     ),
                     body: TabBarView(
+                      // physics: NeverScrollableScrollPhysics(),
                       children: <Widget>[
                         PortfolioView(),
                         AlbumView(),

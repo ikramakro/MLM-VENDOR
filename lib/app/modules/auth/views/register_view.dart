@@ -113,7 +113,7 @@ class RegisterView extends GetView<AuthController> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       TextFieldWidget(
-                        labelText: "Full Name".tr,
+                        labelText: "*Full Name".tr,
                         hintText: "John Doe".tr,
                         initialValue: controller.currentUser?.value?.name,
                         onSaved: (input) =>
@@ -128,7 +128,7 @@ class RegisterView extends GetView<AuthController> {
                       RegisterTextFieldWidget(
                         // isFirst: true,
                         controller: controller.emailController,
-                        labelText: "Email Address".tr,
+                        labelText: "*Email Address".tr,
                         hintText: "johndoe@gmail.com".tr,
                         initialValue: controller.currentUser?.value?.email,
                         onSaved: (input) =>
@@ -167,7 +167,7 @@ class RegisterView extends GetView<AuthController> {
                       ),
                       PhoneFieldWidget(
                         readOnly: false,
-                        labelText: "Phone Number".tr,
+                        labelText: "*Phone Number".tr,
                         hintText: "223 665 7896".tr,
                         initialCountryCode: controller.currentUser?.value
                             ?.getPhoneNumber()
@@ -195,7 +195,7 @@ class RegisterView extends GetView<AuthController> {
                         keyboardType: TextInputType.numberWithOptions(
                             signed: false, decimal: true),
                         hintText: "5".tr,
-                        labelText: "Availability Range".tr,
+                        labelText: "*Availability Range".tr,
                         suffix: Text(Get.find<SettingsService>()
                             .setting
                             .value
@@ -232,7 +232,7 @@ class RegisterView extends GetView<AuthController> {
                                   children: [
                                     Expanded(
                                       child: Text(
-                                        "Provider Types".tr,
+                                        "*Provider Types".tr,
                                         style: Get.textTheme.bodyText1,
                                         textAlign: TextAlign.start,
                                       ),
@@ -321,7 +321,7 @@ class RegisterView extends GetView<AuthController> {
                               children: [
                                 Expanded(
                                   child: Text(
-                                    "Category".tr,
+                                    "*Category".tr,
                                     style: Get.textTheme.bodyText1,
                                     textAlign: TextAlign.start,
                                   ),
@@ -411,7 +411,7 @@ class RegisterView extends GetView<AuthController> {
                       Obx(() {
                         return RegisterTextFieldWidget(
                           controller: controller.passwordController,
-                          labelText: "Password".tr,
+                          labelText: "*Password".tr,
                           hintText: "••••••••••••".tr,
                           initialValue: controller.currentUser?.value?.password,
                           onSaved: (input) =>
@@ -482,15 +482,16 @@ class RegisterView extends GetView<AuthController> {
                   width: Get.width,
                   child: BlockButtonWidget(
                     onPressed: () async {
-                      if (!controller.selectedCategory.isEmpty &&
-                          controller.eProvider.value.type != null) {
-                        await controller.register();
-                      } else {
-                        Get.showSnackbar(Ui.ErrorSnackBar(
-                            message:
-                                "There are errors in some fields please correct them!"
-                                    .tr));
-                      }
+                      await controller.register();
+                      // if (!controller.selectedCategory.isEmpty &&
+                      //     controller.eProvider.value.type != null) {
+                      //
+                      // } else {
+                      //   Get.showSnackbar(Ui.ErrorSnackBar(
+                      //       message:
+                      //           "Fill up all Mendatory Fields"
+                      //               .tr));
+                      // }
 
                       //Get.offAllNamed(Routes.PHONE_VERIFICATION);
                     },

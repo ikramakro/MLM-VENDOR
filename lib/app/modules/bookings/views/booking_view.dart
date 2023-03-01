@@ -11,12 +11,14 @@ import '../../../models/booking_model.dart';
 import '../../../providers/laravel_provider.dart';
 import '../../global_widgets/NumTextFieldWidget.dart';
 import '../../global_widgets/circular_loading_widget.dart';
+import '../../global_widgets/text_field_widget.dart';
 import '../../home/controllers/home_controller.dart';
 import '../controllers/booking_controller.dart';
 import '../widgets/booking_actions_widget.dart';
 import '../widgets/booking_row_widget.dart';
 import '../widgets/booking_til_widget.dart';
 import '../widgets/booking_title_bar_widget.dart';
+import '../widgets/custom_booking_row_widget.dart';
 
 class BookingView extends GetView<BookingController> {
   @override
@@ -204,12 +206,19 @@ class BookingView extends GetView<BookingController> {
                                       ],
                                     ),
                                     hasDivider: true),
-                              BookingRowWidget(
-                                description: "Description".tr,
-                                child: Ui.removeHtml(
-                                    controller.booking.value.hint,
-                                    alignment: Alignment.centerRight),
-                              ),
+                              Obx(() => CustomBookingRowWidget(
+                                    onclick: () => _showMyDialog1(context),
+                                    // controller.DescriptionInBooking("sdd"),
+                                    bookingID: int.parse(
+                                        controller.booking.value.status.id),
+                                    description: "Description".tr,
+                                    child: Text(
+                                      controller.booking.value.hint,
+                                    ),
+                                    // Ui.removeHtml(
+                                    //     controller.booking.value.hint,
+                                    //     alignment: Alignment.centerRight),
+                                  ))
                             ],
                           ),
                         );
@@ -263,9 +272,9 @@ class BookingView extends GetView<BookingController> {
                               style: Get.textTheme.subtitle2),
                           actions: [
                             Obx(
-                              () => (int.parse(controller
-                                  .booking.value.status.id) <
-                                  6)
+                              () => (int.parse(
+                                          controller.booking.value.status.id) <
+                                      6)
                                   ? MaterialButton(
                                       elevation: 0,
                                       onPressed: () {
@@ -355,10 +364,6 @@ class BookingView extends GetView<BookingController> {
                                     ? MaterialButton(
                                         elevation: 0,
                                         onPressed: () {
-                                          print(
-                                              " check this booking value ${controller.booking.value.status.id}");
-                                          print(
-                                              " check this booking value ${controller.booking.value.cancel}");
                                           _showMyDialog(context);
                                           // controller.showMyDatePicker(context);
                                         },
@@ -626,6 +631,66 @@ class BookingView extends GetView<BookingController> {
                     if (controller.ChargeForm.currentState.validate()) {
                       controller.ChargeForm.currentState.save();
                       controller.ExtraInBooking();
+                      // controller.AddCharge();
+                      Navigator.of(context).pop();
+                    }
+                  },
+                ),
+              ],
+            ));
+    ;
+  }
+
+  Future<void> _showMyDialog1(BuildContext context) async {
+    return showDialog(
+        context: context,
+        builder: (_) => new AlertDialog(
+              title: const Text('Edit Description'),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(10.0))),
+              content: Builder(
+                builder: (context) {
+                  // Get available height and width of the build area of this widget. Make a choice depending on the size.
+                  var height = MediaQuery.of(context).size.height;
+                  var width = MediaQuery.of(context).size.width;
+
+                  return Form(
+                    key: controller.ChargeForm1,
+                    child: Container(
+                      height: 150,
+                      width: 400,
+                      child: Container(
+                        width: 80,
+                        height: 50,
+                        child: TextFieldWidget(
+                          keyboardType: TextInputType.text,
+                          // controller: controller.priceController,
+                          validator: (input) => input.length < 2
+                              ? "Should be more than 3 letters".tr
+                              : null,
+                          onSaved: (input) =>
+                              controller.bookingDes.value = input,
+                          // initialValue: "",
+                          // hintText: "Price".tr,
+                          labelText: "Description".tr,
+                          // iconData: Icons.person_outline,
+                        ),
+                      ).paddingOnly(left: 8),
+                    ),
+                  );
+                },
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: const Text('save'),
+                  onPressed: () async {
+                    if (controller.ChargeForm1.currentState.validate()) {
+                      controller.ChargeForm1.currentState.save();
+                      await controller.DescriptionInBooking(
+                          controller.bookingDes.value);
+                      await controller.refreshBooking();
+                      print("hint is ${controller.booking.value.hint}");
+
                       // controller.AddCharge();
                       Navigator.of(context).pop();
                     }

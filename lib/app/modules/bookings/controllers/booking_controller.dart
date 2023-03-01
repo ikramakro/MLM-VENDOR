@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -31,6 +30,7 @@ class BookingController extends GetxController {
   final booking = Booking().obs;
   final bookingExtra = 0.0.obs;
   final bookingExtraString = ''.obs;
+  final bookingDes = ''.obs;
   final InitialDate = DateTime.now().obs;
   final Date = "".obs;
   var messages = <Message>[].obs;
@@ -43,6 +43,7 @@ class BookingController extends GetxController {
   final ChargesName = "".obs;
   final ChargesPrice = "".obs;
   GlobalKey<FormState> ChargeForm = new GlobalKey<FormState>();
+  GlobalKey<FormState> ChargeForm1 = new GlobalKey<FormState>();
 
   BookingController() {
     _bookingRepository = BookingRepository();
@@ -112,6 +113,20 @@ class BookingController extends GetxController {
     }
   }
 
+  Future<void> DescriptionInBooking(String description) async {
+    try {
+      final _booking = new Booking(
+        hint: description,
+      );
+      booking.update((val) {
+        val.hint = description;
+      });
+      await _bookingRepository.descriptionDate(_booking, booking.value.id);
+    } catch (e) {
+      Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+    }
+  }
+
   // void AddCharge() async {
   //   Get.focusScope.unfocus();
   //
@@ -139,7 +154,6 @@ class BookingController extends GetxController {
   Future<void> getBooking() async {
     try {
       booking.value = await _bookingRepository.get(booking.value.id);
-      print("extra is ${booking.value.extra}");
       if (booking.value.status ==
               Get.find<HomeController>().getStatusByOrder(
                   Get.find<GlobalService>().global.value.inProgress) &&

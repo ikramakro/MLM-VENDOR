@@ -9,6 +9,7 @@ class Routes {
   static const CHAT = '/chat';
 
   static const SETTINGS = '/settings';
+  static const CERTIFICATEEDIT = '/CertificateEdit';
   static const SETTINGS_THEME_MODE = '/settings/theme_mode';
   static const SETTINGS_LANGUAGE = '/settings/language';
   static const PROFILE = '/profile';
@@ -20,7 +21,8 @@ class Routes {
   static const PortfolioAlbum = '/portfolio&album';
   static const PortfolioAlbumView = '/PortfolioAndAlbumView';
   static const Albums = '/albums';
-  static const Certificates = '/certificates';
+  static const Certificates = '/CertificatesCreate';
+  static const CertificatesView = '/Certificates_View';
   // static const Album = '/album.dart';
   static const E_SERVICES = '/e-services';
   static const Edit_Album = '/AlbumEdit';

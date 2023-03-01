@@ -6,8 +6,12 @@ import '../modules/AlbumEdit/binding/EditAlbumBinding.dart';
 import '../modules/AlbumEdit/view/EditAlbum.dart';
 import '../modules/Albums/View/album.dart';
 import '../modules/Albums/bindings/AlbumBinding.dart';
-import '../modules/Certificates/View/Certificates.dart';
-import '../modules/Certificates/bindings/certificatesBinding.dart';
+import '../modules/CertificateEdit/Binding/CertificateEditBinding.dart';
+import '../modules/CertificateEdit/View/Certificate_Edit.dart';
+import '../modules/Certificate_View/Binding/CertificateBinding.dart';
+import '../modules/Certificate_View/View/CertificateView.dart';
+import '../modules/CertificatesCreate/View/Certificates.dart';
+import '../modules/CertificatesCreate/bindings/certificatesBinding.dart';
 import '../modules/EditPortfolio/Binding/editportfolioBinding.dart';
 import '../modules/EditPortfolio/View/EditPortfolio.dart';
 import '../modules/EditSubAlbum/Binding/editSubAlbumBinding.dart';
@@ -115,6 +119,10 @@ class Theme1AppPages {
         name: Routes.Portfolio,
         page: () => Portfolio(),
         binding: PortfolioBinding()),
+    GetPage(
+        name: Routes.CertificatesView,
+        page: () => CertificateView(),
+        binding: CertificateViewBinding()),
     GetPage(name: Routes.Albums, page: () => Albums(), binding: AlbumBinding()),
     GetPage(
         name: Routes.Certificates,
@@ -321,6 +329,10 @@ class Theme1AppPages {
         name: Routes.FLUTTERWAVE,
         page: () => FlutterWaveViewWidget(),
         binding: CheckoutBinding()),
+    GetPage(
+        name: Routes.CERTIFICATEEDIT,
+        page: () => CertificateEdit(),
+        binding: CertificateEditBinding()),
     GetPage(
         name: Routes.CASH,
         page: () => CashViewWidget(),

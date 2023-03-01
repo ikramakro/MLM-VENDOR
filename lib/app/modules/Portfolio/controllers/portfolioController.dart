@@ -200,7 +200,7 @@ class PortfolioController extends GetxController {
         uploaded.value = false;
         // await Get.back();
 
-        Get.showSnackbar(Ui.SuccessSnackBar(message: "Portfolio Uploaded"));
+        // Get.showSnackbar(Ui.SuccessSnackBar(message: "Portfolio Uploaded"));
         await Get.offAndToNamed(Routes.PortfolioAlbumView,
             arguments: {'index': 0});
         Get.find<AlbumViewController>().getPortfolio();

@@ -25,7 +25,8 @@ class EServiceOptionsPopupMenuWidget extends GetView<EServicesController> {
         switch (item) {
           case "update":
             {
-              Get.toNamed(Routes.E_SERVICE_FORM, arguments: {'eService': _eService});
+              Get.toNamed(Routes.E_SERVICE_FORM,
+                  arguments: {'eService': _eService});
             }
             break;
           case "delete":
@@ -35,7 +36,10 @@ class EServiceOptionsPopupMenuWidget extends GetView<EServicesController> {
             break;
           case "view":
             {
-              Get.toNamed(Routes.E_SERVICE, arguments: {'eService': _eService, 'heroTag': 'e_provider_services_list_item'});
+              Get.toNamed(Routes.E_SERVICE, arguments: {
+                'eService': _eService,
+                'heroTag': 'e_provider_services_list_item'
+              });
             }
             break;
         }
@@ -75,22 +79,22 @@ class EServiceOptionsPopupMenuWidget extends GetView<EServicesController> {
             ),
           ),
         );
-        list.add(
-          PopupMenuItem(
-            value: "delete",
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Icon(Icons.delete_outline, color: Colors.redAccent),
-                SizedBox(width: 10),
-                Text(
-                  "Delete Service".tr,
-                  style: TextStyle(color: Colors.redAccent),
-                ),
-              ],
-            ),
-          ),
-        );
+        // list.add(
+        //   PopupMenuItem(
+        //     value: "delete",
+        //     child: Row(
+        //       crossAxisAlignment: CrossAxisAlignment.center,
+        //       children: [
+        //         Icon(Icons.delete_outline, color: Colors.redAccent),
+        //         SizedBox(width: 10),
+        //         Text(
+        //           "Delete Service".tr,
+        //           style: TextStyle(color: Colors.redAccent),
+        //         ),
+        //       ],
+        //     ),
+        //   ),
+        // );
         return list;
       },
       child: Icon(
@@ -113,7 +117,8 @@ class EServiceOptionsPopupMenuWidget extends GetView<EServicesController> {
           content: SingleChildScrollView(
             child: Column(
               children: <Widget>[
-                Text("This service will removed from your account".tr, style: Get.textTheme.bodyText1),
+                Text("This service will removed from your account".tr,
+                    style: Get.textTheme.bodyText1),
               ],
             ),
           ),

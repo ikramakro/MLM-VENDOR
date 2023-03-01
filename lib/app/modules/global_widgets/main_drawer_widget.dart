@@ -212,7 +212,8 @@ class MainDrawerWidget extends GetView<EProvidersController> {
               icon: Icons.article_outlined,
               text: "Certificates",
               onTap: (e) {
-                Get.offAndToNamed(Routes.Certificates);
+                Get.offAndToNamed(Routes.CertificatesView);
+                // Get.offAndToNamed(Routes.Certificates);
               },
             ),
           DrawerLinkWidget(
@@ -298,15 +299,15 @@ class MainDrawerWidget extends GetView<EProvidersController> {
               color: Get.theme.focusColor.withOpacity(0.3),
             ),
           ),
-          if (Get.find<AuthService>().user.value.isProvider)
-            DrawerLinkWidget(
-              icon: Icons.person_outline,
-              text: "Account",
-              onTap: (e) {
-                Get.back();
-                Get.find<RootController>().changePage(3);
-              },
-            ),
+          // if (Get.find<AuthService>().user.value.isProvider)
+          //   DrawerLinkWidget(
+          //     icon: Icons.person_outline,
+          //     text: "Account",
+          //     onTap: (e) {
+          //       Get.back();
+          //       Get.find<RootController>().changePage(3);
+          //     },
+          //   ),
           DrawerLinkWidget(
             icon: Icons.settings_outlined,
             text: "Settings",

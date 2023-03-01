@@ -124,6 +124,10 @@ class Certificates extends GetView<CertificatesController> {
                                   itemCount: controller.imagesLength.value,
                                   scrollDirection: Axis.vertical,
                                   itemBuilder: (context, index) {
+                                    controller.controllersTitle
+                                        .add(new TextEditingController());
+                                    controller.controllersDes
+                                        .add(new TextEditingController());
                                     return Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.stretch,
@@ -200,64 +204,24 @@ class Certificates extends GetView<CertificatesController> {
                                             ],
                                           ),
                                         ),
-                                        Obx(
-                                          () => PortfolioTextFieldWidget(
-                                            initialValue: controller
-                                                    .titleList.isNotEmpty
-                                                ? controller.titleList[index]
-                                                : "",
-                                            isFirst: false,
-
-                                            onSaved: (input) {
-                                              if (input != "") {
-                                                if (index <=
-                                                    controller
-                                                            .titleList.length -
-                                                        1) {
-                                                  if (controller
-                                                          .titleList[index] !=
-                                                      "") {
-                                                    controller.titleList
-                                                        .removeAt(index);
-                                                  }
-                                                }
-                                                controller.titleList
-                                                    .insert(index, input);
-                                              }
-                                            },
-                                            validator: (input) => input.length <
-                                                    3
-                                                ? "Should be more than 3 characters"
-                                                    .tr
-                                                : null,
-                                            keyboardType:
-                                                TextInputType.multiline,
-                                            // initialValue: controller.eProvider.value.description,
-                                            hintText:
-                                                "Title for Certificate Image"
-                                                    .tr,
-                                            labelText: "*Title".tr,
-                                          ),
+                                        PortfolioTextFieldWidget(
+                                          controller: controller
+                                              .controllersTitle[index],
+                                          isFirst: false,
+                                          validator: (input) => input.length < 3
+                                              ? "Should be more than 3 characters"
+                                                  .tr
+                                              : null,
+                                          keyboardType: TextInputType.multiline,
+                                          // initialValue: controller.eProvider.value.description,
+                                          hintText:
+                                              "Title for Certificate Image".tr,
+                                          labelText: "*Title".tr,
                                         ),
                                         PortfolioTextFieldWidget(
                                           isFirst: false,
-                                          onSaved: (input) {
-                                            if (input != "") {
-                                              if (index <=
-                                                  controller.descriptionList
-                                                          .length -
-                                                      1) {
-                                                if (controller.descriptionList[
-                                                        index] !=
-                                                    "") {
-                                                  controller.descriptionList
-                                                      .removeAt(index);
-                                                }
-                                              }
-                                              controller.descriptionList
-                                                  .insert(index, input);
-                                            }
-                                          },
+                                          controller:
+                                              controller.controllersDes[index],
                                           validator: (input) => input.length < 3
                                               ? "Should be more than 3 characters"
                                                   .tr

@@ -34,6 +34,8 @@ class CertificatesController extends GetxController {
   final uuidPortfolio = [].obs;
   final eProvider = EProvider().obs;
   final descriptionList = [].obs;
+  List<TextEditingController> controllersTitle = [];
+  List<TextEditingController> controllersDes = [];
   final titleList = [].obs;
   UploadRepository _uploadRepository;
   final createAlbum = false.obs;
@@ -138,6 +140,10 @@ class CertificatesController extends GetxController {
 
     if (certificateForm.currentState.validate()) {
       certificateForm.currentState.save();
+      for (int i = 0; i < uuids.length; i++) {
+        descriptionList.add(controllersDes[i].text);
+        titleList.add(controllersTitle[i].text);
+      }
       try {
         final _certificate = new Certificate(
           image: uuids,
@@ -157,7 +163,8 @@ class CertificatesController extends GetxController {
         uuids.clear();
         imagesLength.value = 1;
         uploaded.value = false;
-        await Get.toNamed(Routes.ROOT, arguments: 0);
+        await Get.offAndToNamed(Routes.CertificatesView);
+        // await Get.toNamed(Routes.ROOT, arguments: 0);
       } catch (e) {
         Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
       }

@@ -10,9 +10,11 @@ class AlbumViewController extends GetxController {
   final eProvider = EProvider().obs;
   final album = <AlbumModel1>[].obs;
   final isDeletable = false.obs;
+  final isDeletablePortfolio = false.obs;
   final isEditable = false.obs;
   final itemList = <AlbumModel1>[].obs;
   final selectedList = <AlbumModel1>[].obs;
+  final selectedListPortfolio = <Media>[].obs;
   EProviderRepository _eProviderRepository;
   final galleries = <Media>[].obs;
   final index = 0.obs;
@@ -45,6 +47,25 @@ class AlbumViewController extends GetxController {
         await getGalleries();
         await getPortfolio();
       }
+    } catch (e) {
+      Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+    }
+  }
+
+  Future<void> deletePortfolio() async {
+    try {
+      for (int i = 0; i < selectedListPortfolio.length; i++) {
+        print("selected list portfolio");
+        print(selectedListPortfolio[i].id);
+        await _eProviderRepository
+            .deletePortfolioImage(selectedListPortfolio[i].id);
+      }
+      Get.showSnackbar(
+          Ui.SuccessSnackBar(message: "Image SuccessFully Removed"));
+      await getPortfolio();
+
+      // Get.back(closeOverlays: true);
+      // Get.offNamed(Routes.PortfolioAlbumView, preventDuplicates: false);
     } catch (e) {
       Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
     }

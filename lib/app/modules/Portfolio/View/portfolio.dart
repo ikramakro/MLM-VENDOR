@@ -196,9 +196,7 @@ class Portfolio extends GetView<PortfolioController> {
                                     PortfolioTextFieldWidget(
                                       controller: controller.controllers[index],
                                       isFirst: false,
-                                      // onSaved: (input) {
-                                      //   controller.descriptionList.add(input);
-                                      // },
+
                                       validator: (input) => input.isEmpty
                                           ? "Should be more than 3 letters".tr
                                           : null,

@@ -87,7 +87,7 @@ class EProviderView extends GetView<EProviderController> {
                               style: Get.textTheme.bodyText1),
                         ),
                         buildAddresses(context),
-                        buildAvailabilityHours(_eProvider),
+                        // buildAvailabilityHours(_eProvider),
                         buildAwards(),
                         // buildExperiences(),
                         EProviderTilWidget(

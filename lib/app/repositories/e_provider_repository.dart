@@ -7,11 +7,13 @@ import '../models/address_model.dart';
 import '../models/album_model.dart';
 import '../models/availability_hour_model.dart';
 import '../models/award_model.dart';
+import '../models/certificate_edit.dart';
 import '../models/certificates_model.dart';
 import '../models/e_provider_model.dart';
 import '../models/e_provider_type_model.dart';
 import '../models/e_service_model.dart';
 import '../models/experience_model.dart';
+import '../models/experience_model_View.dart';
 import '../models/gallery_model.dart';
 import '../models/review_model.dart';
 import '../models/tax_model.dart';
@@ -85,6 +87,14 @@ class EProviderRepository {
     return _laravelApiClient.getEProviderExperiences(eProviderId);
   }
 
+  Future<List<ExperienceView>> getCertificate(String eProviderId) {
+    return _laravelApiClient.getEProviderCertificate(eProviderId);
+  }
+
+  Future<bool> delCertificate(String certID, String eProviderId) {
+    return _laravelApiClient.delEProviderCertificate(certID, eProviderId);
+  }
+
   Future<List<EService>> getEServices({String eProviderId, int page}) {
     return _laravelApiClient.getEProviderEServices(eProviderId, page);
   }
@@ -145,6 +155,10 @@ class EProviderRepository {
     Certificate certificate,
   ) {
     return _laravelApiClient.certificateCreate(certificate);
+  }
+
+  Future certificateEdit(CertificateEdit certificate, String Id) {
+    return _laravelApiClient.certificateEdit(certificate, Id);
   }
 
   Future<List<EProviderType>> getEProviderTypes() {

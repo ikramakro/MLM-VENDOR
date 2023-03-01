@@ -206,7 +206,7 @@ class AlbumController extends GetxController {
         }
         uploaded.value = false;
         // await Get.back();
-        Get.showSnackbar(Ui.SuccessSnackBar(message: "Album Uploaded"));
+        // Get.showSnackbar(Ui.SuccessSnackBar(message: "Album Uploaded"));
         await Get.offAndToNamed(
           Routes.PortfolioAlbumView,
           arguments: {'index': 1},

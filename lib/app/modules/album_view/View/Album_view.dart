@@ -13,46 +13,19 @@ class AlbumView extends GetView<AlbumViewController> {
     final key1 = GlobalObjectKey<ExpandableFabState>(context);
     return Obx(() => Scaffold(
         floatingActionButtonLocation: controller.isDeletable.isFalse
-            ? ExpandableFab.location
+            ? FloatingActionButtonLocation.miniEndFloat
             : FloatingActionButtonLocation.centerFloat,
         floatingActionButton: Obx(
           () => controller.isDeletable.isFalse
-              ? ExpandableFab(
-                  key: key1,
-                  overlayStyle: ExpandableFabOverlayStyle(
-                    // color: Colors.black.withOpacity(0.5),
-                    blur: 5,
-                  ),
-                  children: [
-                    FloatingActionButton.small(
-                      heroTag: null,
-                      child: const Icon(Icons.edit),
-                      onPressed: () {
-                        controller.isEditable.value = true;
-                        key1.currentState.toggle();
-                        // Get.toNamed(Routes.Edit_Album);
-                      },
-                    ),
-                    FloatingActionButton.small(
-                      heroTag: null,
-                      child: const Icon(Icons.delete),
-                      onPressed: () {
-                        controller.isDeletable.value = true;
-                      },
-                    ),
-                    FloatingActionButton.small(
-                      heroTag: null,
-                      child: const Icon(Icons.add),
-                      onPressed: () {
-                        controller.index.value = 1;
-                        Get.offAndToNamed(
-                          Routes.PortfolioAlbum,
-                          arguments: {'index': 1},
-                        );
-                        key1.currentState.toggle();
-                      },
-                    ),
-                  ],
+              ? FloatingActionButton(
+                  child: new Icon(Icons.add,
+                      size: 28, color: Get.theme.primaryColor),
+                  onPressed: () => {
+                    controller.index.value = 0,
+                    Get.toNamed(Routes.PortfolioAlbum, arguments: {'index': 1})
+                    // Get.toN,
+                  },
+                  backgroundColor: Get.theme.colorScheme.secondary,
                 )
               : IconButton(
                   icon: new Icon(Icons.cancel_rounded,
@@ -60,14 +33,55 @@ class AlbumView extends GetView<AlbumViewController> {
                   onPressed: () => controller.isDeletable.value = false,
                 ),
         ),
-        // new FloatingActionButton(
-        //   child: new Icon(Icons.edit, size: 28, color: Get.theme.primaryColor),
-        //   onPressed: () => {
-        //     // Get.toNamed(Routes.PortfolioAlbum, preventDuplicates: false),
-        //     // Get.toN,
-        //   },
-        //   backgroundColor: Get.theme.colorScheme.secondary,
+        // floatingActionButtonLocation: controller.isDeletable.isFalse
+        //     ? ExpandableFab.location
+        //     : FloatingActionButtonLocation.centerFloat,
+        // floatingActionButton: Obx(
+        //   () => controller.isDeletable.isFalse
+        //       ? ExpandableFab(
+        //           key: key1,
+        //           overlayStyle: ExpandableFabOverlayStyle(
+        //             // color: Colors.black.withOpacity(0.5),
+        //             blur: 5,
+        //           ),
+        //           children: [
+        //             FloatingActionButton.small(
+        //               heroTag: null,
+        //               child: const Icon(Icons.edit),
+        //               onPressed: () {
+        //                 controller.isEditable.value = true;
+        //                 key1.currentState.toggle();
+        //                 // Get.toNamed(Routes.Edit_Album);
+        //               },
+        //             ),
+        //             FloatingActionButton.small(
+        //               heroTag: null,
+        //               child: const Icon(Icons.delete),
+        //               onPressed: () {
+        //                 controller.isDeletable.value = true;
+        //               },
+        //             ),
+        //             FloatingActionButton.small(
+        //               heroTag: null,
+        //               child: const Icon(Icons.add),
+        //               onPressed: () {
+        //                 controller.index.value = 1;
+        //                 Get.offAndToNamed(
+        //                   Routes.PortfolioAlbum,
+        //                   arguments: {'index': 1},
+        //                 );
+        //                 key1.currentState.toggle();
+        //               },
+        //             ),
+        //           ],
+        //         )
+        //       : IconButton(
+        //           icon: new Icon(Icons.cancel_rounded,
+        //               size: 35, color: Colors.blueAccent),
+        //           onPressed: () => controller.isDeletable.value = false,
+        //         ),
         // ),
+
         body: Obx(
           () => controller.isDeletable.isFalse
               ? RefreshIndicator(
@@ -77,10 +91,16 @@ class AlbumView extends GetView<AlbumViewController> {
                     scrollDirection: Axis.vertical,
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 3,
-                        crossAxisSpacing: 5.0,
+                        mainAxisExtent: 130,
+                        crossAxisSpacing: 7.0,
                         mainAxisSpacing: 5.0),
                     itemBuilder: (context, index) {
                       return GestureDetector(
+                        onLongPress: () {
+                          controller.selectedList.value = [];
+                          controller.isDeletable.value = true;
+                          // controller.selectedList.add(controller.album[index]);
+                        },
                         onTap: () {
                           print(
                               "this is the Album of image ${controller.album[index].images}");
@@ -95,26 +115,33 @@ class AlbumView extends GetView<AlbumViewController> {
                                 });
                           controller.isEditable.value = false;
                         },
-                        child: Hero(
-                          tag: 'AlbumView' + controller.album[index].id,
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.all(Radius.circular(10)),
-                            child: CachedNetworkImage(
-                              height: 100,
-                              width: double.infinity,
-                              fit: BoxFit.fill,
-                              imageUrl: controller
-                                  .album[index].images[0].media[0].url,
-                              placeholder: (context, url) => Image.asset(
-                                'assets/img/loading.gif',
-                                fit: BoxFit.cover,
-                                width: double.infinity,
-                                height: 100,
+                        child: Column(
+                          children: [
+                            Hero(
+                              tag: 'AlbumView' + controller.album[index].id,
+                              child: ClipRRect(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10)),
+                                child: CachedNetworkImage(
+                                  height: 110,
+                                  width: double.infinity,
+                                  fit: BoxFit.fill,
+                                  imageUrl: controller
+                                      .album[index].images[0].media[0].url,
+                                  placeholder: (context, url) => Image.asset(
+                                    'assets/img/loading.gif',
+                                    fit: BoxFit.cover,
+                                    width: double.infinity,
+                                    height: 110,
+                                  ),
+                                  errorWidget: (context, url, error) =>
+                                      Icon(Icons.error_outline),
+                                ),
                               ),
-                              errorWidget: (context, url, error) =>
-                                  Icon(Icons.error_outline),
                             ),
-                          ),
+                            Text(controller.album[index].name)
+                                .paddingOnly(top: 5)
+                          ],
                         ),
                       );
                     },

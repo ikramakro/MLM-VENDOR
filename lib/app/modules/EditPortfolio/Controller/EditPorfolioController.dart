@@ -76,6 +76,7 @@ class EditPortfolioController extends GetxController {
   Future<void> deletePortfolio(String Id) async {
     try {
       await _eProviderRepository.deletePortfolioImage(Id);
+
       Get.back(closeOverlays: true);
       // Get.offNamed(Routes.PortfolioAlbumView, preventDuplicates: false);
     } catch (e) {
