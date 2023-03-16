@@ -2,16 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../../common/ui.dart';
+import '../../Albums/View/album.dart';
 import '../../Albums/controllers/AlbumController.dart';
-import '../../Portfolio/View/portfolio.dart';
 
-class PortfolioAndAlbum extends GetView<AlbumController> {
+class AlbumCreate extends GetView<AlbumController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "Portfolio".tr,
+          "Album".tr,
           style: context.textTheme.headline6,
         ),
         centerTitle: true,
@@ -28,7 +28,7 @@ class PortfolioAndAlbum extends GetView<AlbumController> {
         decoration: Ui.getBoxDecoration(),
         // width: 200,
 
-        child: Portfolio(),
+        child: Albums(),
       ),
     );
   }

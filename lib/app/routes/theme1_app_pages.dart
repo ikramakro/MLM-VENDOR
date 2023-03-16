@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 
 import '../middlewares/auth_middleware.dart';
 import '../middlewares/provider_middleware.dart';
+import '../modules/AlbumCreate/View/AlbumCreate.dart';
 import '../modules/AlbumEdit/binding/EditAlbumBinding.dart';
 import '../modules/AlbumEdit/view/EditAlbum.dart';
 import '../modules/Albums/View/album.dart';
@@ -187,6 +188,11 @@ class Theme1AppPages {
     GetPage(
       name: Routes.PortfolioAlbum,
       page: () => PortfolioAndAlbum(),
+      binding: PortfolioAndAlbumBinding(),
+    ),
+    GetPage(
+      name: Routes.AlbumCreate,
+      page: () => AlbumCreate(),
       binding: PortfolioAndAlbumBinding(),
     ),
     GetPage(

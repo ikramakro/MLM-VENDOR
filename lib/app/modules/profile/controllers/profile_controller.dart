@@ -198,6 +198,7 @@ class ProfileController extends GetxController {
       } else {
         await unavailableEProvider();
       }
+      Get.back();
       // print(
       //     "eprovider accept is ${eProviders[0].accept.toString()} and setting status is ${availableStatusValue.value.toString()}");
     }

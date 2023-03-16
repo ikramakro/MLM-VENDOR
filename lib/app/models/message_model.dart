@@ -30,7 +30,6 @@ class Message extends Model {
     this.id = null,
     this.name = '',
     this.bookingID,
-    this.Status = false,
   }) {
     visibleToUsers = this.users.map((user) => user.id).toList();
     readByUsers = [];

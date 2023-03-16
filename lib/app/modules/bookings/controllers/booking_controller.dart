@@ -316,11 +316,14 @@ class BookingController extends GetxController {
   }
 
   Future listenForMessages(Booking booking) async {
+    print("booking id for get chat ${booking.id}");
     final _userMessages = await getVendorMessagesStartAt(booking);
 
     if (_userMessages.docs.isNotEmpty) {
       _userMessages.docs.forEach((element) {
         messages.add(Message.fromDocumentSnapshot(element));
+        print("lesson for massages");
+        print(messages);
         Get.toNamed(Routes.CHAT, arguments: messages[0]);
       });
       lastDocument.value = _userMessages.docs.last;

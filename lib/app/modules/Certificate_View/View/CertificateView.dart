@@ -103,7 +103,7 @@ class CertificateView extends GetView<CertificatesViewController> {
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(10)),
                                   child: CachedNetworkImage(
-                                    height: 130,
+                                    height: 120,
                                     width: double.infinity,
                                     fit: BoxFit.fill,
                                     imageUrl: controller
@@ -112,7 +112,7 @@ class CertificateView extends GetView<CertificatesViewController> {
                                       'assets/img/loading.gif',
                                       fit: BoxFit.fill,
                                       width: double.infinity,
-                                      height: 130,
+                                      height: 120,
                                     ),
                                     errorWidget: (context, url, error) =>
                                         Icon(Icons.error_outline),

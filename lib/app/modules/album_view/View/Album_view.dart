@@ -21,8 +21,8 @@ class AlbumView extends GetView<AlbumViewController> {
                   child: new Icon(Icons.add,
                       size: 28, color: Get.theme.primaryColor),
                   onPressed: () => {
-                    controller.index.value = 0,
-                    Get.toNamed(Routes.PortfolioAlbum, arguments: {'index': 1})
+                    controller.index.value = 1,
+                    Get.toNamed(Routes.AlbumCreate, arguments: {'index': 1})
                     // Get.toN,
                   },
                   backgroundColor: Get.theme.colorScheme.secondary,
@@ -110,9 +110,10 @@ class AlbumView extends GetView<AlbumViewController> {
                                   'hero': 'AlbumView',
                                   'eProvider': controller.eProvider.value
                                 })
-                              : Get.toNamed(Routes.Edit_Album, arguments: {
-                                  'album': controller.album[index],
-                                });
+                              : Get.offAndToNamed(Routes.Edit_Album,
+                                  arguments: {
+                                      'album': controller.album[index],
+                                    });
                           controller.isEditable.value = false;
                         },
                         child: Column(
@@ -123,7 +124,7 @@ class AlbumView extends GetView<AlbumViewController> {
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(10)),
                                 child: CachedNetworkImage(
-                                  height: 110,
+                                  height: 100,
                                   width: double.infinity,
                                   fit: BoxFit.fill,
                                   imageUrl: controller
@@ -132,7 +133,7 @@ class AlbumView extends GetView<AlbumViewController> {
                                     'assets/img/loading.gif',
                                     fit: BoxFit.cover,
                                     width: double.infinity,
-                                    height: 110,
+                                    height: 100,
                                   ),
                                   errorWidget: (context, url, error) =>
                                       Icon(Icons.error_outline),

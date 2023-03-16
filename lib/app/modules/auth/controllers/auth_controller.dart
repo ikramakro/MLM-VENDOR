@@ -117,6 +117,7 @@ class AuthController extends GetxController {
       loginFormKey.currentState.save();
       loading.value = true;
       try {
+        await Get.find<FireBaseMessagingService>().delDeviceToken();
         await Get.find<FireBaseMessagingService>().setDeviceToken();
 
         currentUser.value = await _userRepository.login(currentUser.value);
@@ -173,6 +174,7 @@ class AuthController extends GetxController {
               await Get.toNamed(Routes.PHONE_VERIFICATION);
             } else {
               print("this is running second");
+              await Get.find<FireBaseMessagingService>().delDeviceToken();
               await Get.find<FireBaseMessagingService>().setDeviceToken();
               currentUser.value =
                   await _userRepository.register(currentUser.value);

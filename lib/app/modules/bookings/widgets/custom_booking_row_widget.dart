@@ -9,6 +9,7 @@ class CustomBookingRowWidget extends StatelessWidget {
     this.bookingID,
     this.valueStyle,
     this.hasDivider,
+    this.des,
     this.child,
     this.onclick,
     this.descriptionFlex,
@@ -21,6 +22,7 @@ class CustomBookingRowWidget extends StatelessWidget {
   final Function onclick;
   final int valueFlex;
   final String value;
+  final String des;
   final Widget child;
   final TextStyle valueStyle;
   final bool hasDivider;

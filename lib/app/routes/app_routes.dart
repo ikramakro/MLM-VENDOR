@@ -19,6 +19,7 @@ class Routes {
   static const Portfolio = '/portfolio';
   static const Portfolio_view = '/Portfolio_View';
   static const PortfolioAlbum = '/portfolio&album';
+  static const AlbumCreate = '/AlbumCreate';
   static const PortfolioAlbumView = '/PortfolioAndAlbumView';
   static const Albums = '/albums';
   static const Certificates = '/CertificatesCreate';

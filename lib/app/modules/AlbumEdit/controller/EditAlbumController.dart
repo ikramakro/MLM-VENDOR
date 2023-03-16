@@ -12,6 +12,7 @@ import '../../../models/media_model.dart';
 import '../../../models/user_model.dart';
 import '../../../repositories/e_provider_repository.dart';
 import '../../../repositories/upload_repository.dart';
+import '../../../routes/app_routes.dart';
 
 class EditAlbumController extends GetxController {
   final albumForm1 = GlobalKey<FormState>().obs;
@@ -209,7 +210,8 @@ class EditAlbumController extends GetxController {
           c.text = "";
         }
         uploaded.value = false;
-        await Get.back();
+        // await Get.back();
+        Get.offAndToNamed(Routes.PortfolioAlbumView, arguments: {'index': 1});
         Get.showSnackbar(Ui.SuccessSnackBar(message: "Album Uploaded"));
         Get.back();
         // await Get.toNamed(Routes.PortfolioAlbumView);

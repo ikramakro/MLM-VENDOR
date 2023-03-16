@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart' as fba;
 import 'package:get/get.dart';
 
 import '../services/auth_service.dart';
+import '../services/firebase_messaging_service.dart';
 
 class FirebaseProvider extends GetxService {
   fba.FirebaseAuth _auth = fba.FirebaseAuth.instance;
@@ -15,6 +16,7 @@ class FirebaseProvider extends GetxService {
       fba.UserCredential result = await _auth.signInWithEmailAndPassword(
           email: email, password: password);
       if (result.user != null) {
+        await Get.putAsync(() => FireBaseMessagingService().init());
         return true;
       } else {
         return false;

@@ -23,6 +23,7 @@ class PortfolioView extends GetView<AlbumViewController> {
                   onPressed: () => {
                     controller.index.value = 0,
                     Get.toNamed(Routes.PortfolioAlbum, arguments: {'index': 0})
+
                     // Get.toN,
                   },
                   backgroundColor: Get.theme.colorScheme.secondary,

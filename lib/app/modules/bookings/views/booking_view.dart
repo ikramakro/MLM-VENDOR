@@ -207,7 +207,8 @@ class BookingView extends GetView<BookingController> {
                                     ),
                                     hasDivider: true),
                               Obx(() => CustomBookingRowWidget(
-                                    onclick: () => _showMyDialog1(context),
+                                    onclick: () => _showMyDialog1(
+                                        context, controller.booking.value.hint),
                                     // controller.DescriptionInBooking("sdd"),
                                     bookingID: int.parse(
                                         controller.booking.value.status.id),
@@ -641,7 +642,7 @@ class BookingView extends GetView<BookingController> {
     ;
   }
 
-  Future<void> _showMyDialog1(BuildContext context) async {
+  Future<void> _showMyDialog1(BuildContext context, String des) async {
     return showDialog(
         context: context,
         builder: (_) => new AlertDialog(
@@ -670,7 +671,7 @@ class BookingView extends GetView<BookingController> {
                               : null,
                           onSaved: (input) =>
                               controller.bookingDes.value = input,
-                          // initialValue: "",
+                          initialValue: des,
                           // hintText: "Price".tr,
                           labelText: "Description".tr,
                           // iconData: Icons.person_outline,
@@ -858,11 +859,11 @@ class BookingView extends GetView<BookingController> {
                         controller.messages.value = [];
                         bool chatExist =
                             await controller.listenForMessages(_booking);
+                        print("on button chatExist $chatExist");
 
                         if (chatExist == false) {
                           controller.startChat();
                         }
-                        controller.startChat();
                       },
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10)),

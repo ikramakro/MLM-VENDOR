@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../../common/ui.dart';
+import '../../../routes/app_routes.dart';
 import '../../album_view/Controller/AlbumView_Controller.dart';
 import '../../album_view/View/Album_view.dart';
 import '../../portfolio_view/View/Portfolio_View.dart';
@@ -40,6 +41,8 @@ class PortfolioAndAlbumView extends GetView<AlbumViewController> {
                     icon: new Icon(Icons.edit, color: Colors.blueAccent),
                     onPressed: () {
                       controller.isDeletable.value = false;
+                      Get.toNamed(Routes.Edit_Album,
+                          arguments: {'album': controller.selectedList[0]});
 
                       print("this is album edit butn calling");
 
@@ -55,7 +58,7 @@ class PortfolioAndAlbumView extends GetView<AlbumViewController> {
                     icon: new Icon(Icons.delete, color: Colors.blueAccent),
                     onPressed: () {
                       print("this is album delete butn calling");
-                      // controller.delExperiences();
+                      controller.delAlbum();
                       controller.isDeletable.value = false;
                     },
                   )
@@ -129,7 +132,7 @@ class PortfolioAndAlbumView extends GetView<AlbumViewController> {
                                         fontSize:
                                             MediaQuery.of(context).size.width /
                                                 100 *
-                                                3.7,
+                                                3.0,
                                         color: Get.theme.colorScheme.secondary),
                                   ),
                                   Text(
@@ -138,7 +141,7 @@ class PortfolioAndAlbumView extends GetView<AlbumViewController> {
                                         fontSize:
                                             MediaQuery.of(context).size.width /
                                                 100 *
-                                                3.7,
+                                                3.0,
                                         color: Get.theme.colorScheme.secondary),
                                   ),
                                   // SizedBox(),

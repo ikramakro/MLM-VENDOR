@@ -21,13 +21,14 @@ class AuthService extends GetxService {
       if (Get.isRegistered<SettingsService>()) {
         Get.find<SettingsService>().address.value.userId = _user.id;
       }
-      _box.write('current_user', _user.toJson());
+      // _box.write('current_user', _user.toJson());
     });
     await getCurrentUser();
     return this;
   }
 
   Future getCurrentUser() async {
+    // user.value.auth = false;
     if (user.value.auth == null && _box.hasData('current_user')) {
       user.value = User.fromJson(await _box.read('current_user'));
       user.value.auth = true;
@@ -40,6 +41,7 @@ class AuthService extends GetxService {
     user.value = new User();
     await _usersRepo.signOut();
     await _box.remove('current_user');
+    print("this current user is deleted");
   }
 
   Future isRoleChanged() async {

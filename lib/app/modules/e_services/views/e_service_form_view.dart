@@ -201,7 +201,9 @@ class EServiceFormView extends GetView<EServiceFormController> {
                         children: [
                           Expanded(
                             child: Text(
-                              "SubCategories".tr,
+                              controller.eService.value.hasData
+                                  ? "SubCategory".tr
+                                  : "Select SubCategory",
                               style: Get.textTheme.bodyText1,
                               textAlign: TextAlign.start,
                             ).paddingOnly(top: 15),
