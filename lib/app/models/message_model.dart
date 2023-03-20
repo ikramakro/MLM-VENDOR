@@ -12,7 +12,6 @@ class Message extends Model {
   // Chats messages
   String lastMessage;
 
-  bool Status;
   int lastMessageTime;
   String bookingID;
 
@@ -39,7 +38,7 @@ class Message extends Model {
     try {
       id = jsonMap.id;
       name = jsonMap.get('name') != null ? jsonMap.get('name').toString() : '';
-      Status = jsonMap.get('Status') != null ? jsonMap.get('Status') : '';
+
       readByUsers = jsonMap.get('read_by_users') != null
           ? List.from(jsonMap.get('read_by_users'))
           : [];
@@ -77,7 +76,6 @@ class Message extends Model {
     var map = new Map<String, dynamic>();
     map["id"] = id;
     map["name"] = name;
-    map["Status"] = Status;
 
     map["users"] =
         users.map((element) => element.toRestrictMap()).toSet().toList();
@@ -93,7 +91,7 @@ class Message extends Model {
   Map toUpdatedMap() {
     var map = new Map<String, dynamic>();
     map["message"] = lastMessage;
-    map["Status"] = Status;
+
     map["time"] = lastMessageTime;
     map["read_by_users"] = readByUsers;
     return map;
@@ -107,7 +105,6 @@ class Message extends Model {
           runtimeType == other.runtimeType &&
           id == other.id &&
           name == other.name &&
-          Status == other.Status &&
           lastMessage == other.lastMessage &&
           lastMessageTime == other.lastMessageTime &&
           bookingID == other.bookingID &&
@@ -120,7 +117,6 @@ class Message extends Model {
       super.hashCode ^
       id.hashCode ^
       name.hashCode ^
-      Status.hashCode ^
       lastMessage.hashCode ^
       lastMessageTime.hashCode ^
       bookingID.hashCode ^
