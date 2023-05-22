@@ -9,9 +9,7 @@ import '../../../models/chat_model.dart';
 import '../../../models/media_model.dart';
 import '../../../models/message_model.dart';
 import '../../../models/user_model.dart';
-import '../../../services/auth_service.dart';
 import '../../global_widgets/circular_loading_widget.dart';
-import '../../global_widgets/notifications_button_widget.dart';
 import '../controllers/messages_controller.dart';
 import '../widgets/chat_message_item_widget.dart';
 
@@ -66,7 +64,6 @@ class ChatsView extends GetView<MessagesController> {
     if (controller.message.value.id != null) {
       controller.listenForChats();
     }
-    AuthService _authService = Get.find<AuthService>();
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -75,74 +72,18 @@ class ChatsView extends GetView<MessagesController> {
         leading: new IconButton(
             icon: new Icon(Icons.arrow_back_ios, color: Get.theme.hintColor),
             onPressed: () async {
-              // controller.message.value = new Message([]);
+              controller.message.value = new Message([]);
               controller.chats.clear();
               await controller.refreshMessages();
               Get.back();
             }),
         automaticallyImplyLeading: false,
-        actions: [NotificationsButtonWidget()],
         title: Obx(() {
-          return Center(
-            child: Row(
-              children: [
-                Text(
-                  controller.message.value.users[0].name ==
-                          _authService.user.value.name
-                      ? controller.message.value.users[1].name
-                      : controller.message.value.users[0].name,
-
-                  // controller.message.value.users[0].name,
-                  overflow: TextOverflow.fade,
-                  maxLines: 1,
-                  style: Get.textTheme.headline6
-                      .merge(TextStyle(letterSpacing: 1.3)),
-                ),
-                StreamBuilder<QuerySnapshot>(
-                    stream: FirebaseFirestore.instance
-                        .collection("Users")
-                        .where("id",
-                            isEqualTo: controller
-                                        .message.value.visibleToUsers[0] ==
-                                    _authService.user.value.id
-                                ? controller.message.value.visibleToUsers[1]
-                                : controller.message.value.visibleToUsers[0])
-                        .snapshots(),
-                    builder: (context, snapshot) {
-                      // if(snapshot.hasError){
-                      //   return SizedBox();
-                      // }
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return SizedBox();
-                      }
-                      if (snapshot.connectionState == ConnectionState.none) {
-                        return Text("no data");
-                      }
-                      if (snapshot.connectionState == ConnectionState.done) {
-                        return Text("done");
-                      }
-                      if (!snapshot.hasData) {
-                        return Text('no has data');
-                      }
-                      if (snapshot.data.docs.length == 0) {
-                        return Text("offline");
-                      }
-                      if (snapshot.connectionState == ConnectionState.active) {
-                        Map<String, dynamic> data =
-                            snapshot.data.docs[0].data();
-                        return Container(
-                          height: MediaQuery.of(context).size.height * .0200,
-                          width: MediaQuery.of(context).size.width * .040,
-                          decoration: BoxDecoration(
-                              color:
-                                  data['status'] ? Colors.green : Colors.grey,
-                              borderRadius: BorderRadius.circular(30)),
-                        );
-                      }
-                      return Text("non");
-                    }),
-              ],
-            ),
+          return Text(
+            controller.message.value.name,
+            overflow: TextOverflow.fade,
+            maxLines: 1,
+            style: Get.textTheme.headline6.merge(TextStyle(letterSpacing: 1.3)),
           );
         }),
       ),

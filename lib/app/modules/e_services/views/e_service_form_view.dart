@@ -43,18 +43,18 @@ class EServiceFormView extends GetView<EServiceFormController> {
             },
           ),
           elevation: 0,
-          actions: [
-            if (!controller.isCreateForm())
-              new IconButton(
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                icon: new Icon(
-                  Icons.delete_outline,
-                  color: Colors.redAccent,
-                  size: 28,
-                ),
-                onPressed: () => _showDeleteDialog(context),
-              ),
-          ],
+          // actions: [
+          //   if (!controller.isCreateForm())
+          //     new IconButton(
+          //       padding: EdgeInsets.symmetric(horizontal: 20),
+          //       icon: new Icon(
+          //         Icons.delete_outline,
+          //         color: Colors.redAccent,
+          //         size: 28,
+          //       ),
+          //       onPressed: () => _showDeleteDialog(context),
+          //     ),
+          // ],
         ),
         bottomNavigationBar: Container(
           padding: EdgeInsets.symmetric(vertical: 10),
@@ -201,7 +201,9 @@ class EServiceFormView extends GetView<EServiceFormController> {
                         children: [
                           Expanded(
                             child: Text(
-                              "Sub SubCategories".tr,
+                              controller.eService.value.hasData
+                                  ? "SubCategory".tr
+                                  : "Select SubCategory",
                               style: Get.textTheme.bodyText1,
                               textAlign: TextAlign.start,
                             ).paddingOnly(top: 15),

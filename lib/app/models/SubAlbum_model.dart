@@ -1,7 +1,6 @@
 import 'dart:core';
 
 import 'SubAlbumGalleries_model.dart';
-import 'media_model.dart';
 import 'parents/model.dart';
 
 class SubAlbum extends Model {
@@ -11,16 +10,15 @@ class SubAlbum extends Model {
   DateTime created_at;
   DateTime updated_at;
   List<SubAlbumGalleries> galleries;
-  Media image;
 
-  SubAlbum(
-      {this.id,
-      this.albums_id,
-      this.gallery_id,
-      this.created_at,
-      this.updated_at,
-      this.galleries,
-      this.image});
+  SubAlbum({
+    this.id,
+    this.albums_id,
+    this.gallery_id,
+    this.created_at,
+    this.updated_at,
+    this.galleries,
+  });
 
   SubAlbum.fromJson(Map<String, dynamic> json) {
     super.fromJson(json);
@@ -31,7 +29,6 @@ class SubAlbum extends Model {
         defaultValue: DateTime.now().toLocal());
     updated_at = dateFromJson(json, 'updated_at',
         defaultValue: DateTime.now().toLocal());
-    image = mediaFromJson(json, 'image');
 
     galleries =
         listFromJson(json, 'galleries', (v) => SubAlbumGalleries.fromJson(v));

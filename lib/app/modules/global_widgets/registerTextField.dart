@@ -104,8 +104,6 @@ class _PasswordTextFieldWidgetState extends State<PasswordTextFieldWidget> {
             onSaved: widget.onSaved,
             onChanged: !widget.isemail
                 ? (val) {
-                    widget.onChanged;
-
                     if (val.length >= 8) {
                       setState(() {
                         lenghtcheck = true;

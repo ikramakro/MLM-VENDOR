@@ -23,8 +23,7 @@ class ThemeModeView extends GetView<ThemeModeController> {
                 backgroundColor: Colors.transparent,
                 automaticallyImplyLeading: false,
                 leading: new IconButton(
-                  icon: new Icon(Icons.arrow_back_ios,
-                      color: Get.theme.hintColor),
+                  icon: new Icon(Icons.arrow_back_ios, color: Get.theme.hintColor),
                   onPressed: () => Get.back(),
                 ),
                 elevation: 0,
@@ -44,8 +43,7 @@ class ThemeModeView extends GetView<ThemeModeController> {
                     onChanged: (value) {
                       controller.changeThemeMode(value);
                     },
-                    title:
-                        Text("Light Theme".tr, style: Get.textTheme.bodyText2),
+                    title: Text("Light Theme".tr, style: Get.textTheme.bodyText2),
                   ),
                   RadioListTile(
                     value: ThemeMode.dark,
@@ -53,8 +51,7 @@ class ThemeModeView extends GetView<ThemeModeController> {
                     onChanged: (value) {
                       controller.changeThemeMode(value);
                     },
-                    title:
-                        Text("Dark Theme".tr, style: Get.textTheme.bodyText2),
+                    title: Text("Dark Theme".tr, style: Get.textTheme.bodyText2),
                   ),
                   RadioListTile(
                     value: ThemeMode.system,
@@ -62,8 +59,7 @@ class ThemeModeView extends GetView<ThemeModeController> {
                     onChanged: (value) {
                       controller.changeThemeMode(value);
                     },
-                    title:
-                        Text("System Theme".tr, style: Get.textTheme.bodyText2),
+                    title: Text("System Theme".tr, style: Get.textTheme.bodyText2),
                   ),
                 ],
               ),

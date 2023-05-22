@@ -69,16 +69,15 @@ class MessageItemWidget extends StatelessWidget {
                         height: 140,
                         width: double.infinity,
                         fit: BoxFit.cover,
-                        imageUrl: this.message.users[0].avatar.thumb ==
-                                _authService.user.value.avatar.thumb
-                            ? this.message.users[1].avatar.thumb
-                            : this.message.users[0].avatar.thumb,
-                        // .firstWhere(
-                        //     (element) =>
-                        //         element.id == _authService.user.value.id,
-                        //     orElse: () => User.fromJson({}))
-                        // .avatar
-                        // .thumb,
+                        imageUrl: this
+                            .message
+                            .users
+                            .firstWhere(
+                                (element) =>
+                                    element.id != _authService.user.value.id,
+                                orElse: () => User.fromJson({}))
+                            .avatar
+                            .thumb,
                         placeholder: (context, url) => Image.asset(
                           'assets/img/loading.gif',
                           fit: BoxFit.cover,
@@ -116,10 +115,7 @@ class MessageItemWidget extends StatelessWidget {
                       children: [
                         Expanded(
                           child: Text(
-                            this.message.users[0].name ==
-                                    _authService.user.value.name
-                                ? this.message.users[1].name
-                                : this.message.users[0].name,
+                            this.message.users[0].name,
                             overflow: TextOverflow.fade,
                             softWrap: false,
                             style: Get.textTheme.bodyText1.merge(TextStyle(
@@ -131,62 +127,57 @@ class MessageItemWidget extends StatelessWidget {
                                     : FontWeight.w800)),
                           ),
                         ),
-                        StreamBuilder<QuerySnapshot>(
-                            stream: FirebaseFirestore.instance
-                                .collection("Users")
-                                .where("id",
-                                    isEqualTo: this.message.visibleToUsers[0] ==
-                                            _authService.user.value.id
-                                        ? this.message.visibleToUsers[1]
-                                        : this.message.visibleToUsers[0])
-                                .snapshots(),
-                            builder: (context, snapshot) {
-                              // if(snapshot.hasError){
-                              //   return SizedBox();
-                              // }
-                              if (snapshot.connectionState ==
-                                  ConnectionState.waiting) {
-                                return SizedBox();
-                              }
-                              if (snapshot.connectionState ==
-                                  ConnectionState.none) {
-                                return Text("no data");
-                              }
-                              if (snapshot.connectionState ==
-                                  ConnectionState.done) {
-                                return Text("done");
-                              }
-                              if (!snapshot.hasData) {
-                                return Text('no has data');
-                              }
-                              if (snapshot.data.docs.length == 0) {
-                                return Text("No Status find");
-                              }
-                              if (snapshot.connectionState ==
-                                  ConnectionState.active) {
-                                Map<String, dynamic> data =
-                                    snapshot.data.docs[0].data();
-                                Get.log(
-                                    "this is the status  ${data.toString()}");
-                                return Text(
-                                  data['status'] ? "Online" : "Offline",
-                                  style: TextStyle(
-                                      color: data['status']
-                                          ? Colors.green
-                                          : Colors.grey),
-                                );
-                              }
-                              return Text("non");
-                            }),
                       ],
                     ),
+                    StreamBuilder<QuerySnapshot>(
+                        stream: FirebaseFirestore.instance
+                            .collection("Users")
+                            .where("id",
+                                isEqualTo: this.message.visibleToUsers[0])
+                            .snapshots(),
+                        builder: (context, snapshot) {
+                          // if(snapshot.hasError){
+                          //   return SizedBox();
+                          // }
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return SizedBox();
+                          }
+                          if (snapshot.connectionState ==
+                              ConnectionState.none) {
+                            return Text("no data");
+                          }
+                          if (snapshot.connectionState ==
+                              ConnectionState.done) {
+                            return Text("done");
+                          }
+                          if (!snapshot.hasData) {
+                            return Text('no has data');
+                          }
+                          if (snapshot.data.docs.length == 0) {
+                            return Text("offline");
+                          }
+                          if (snapshot.connectionState ==
+                              ConnectionState.active) {
+                            Map<String, dynamic> data =
+                                snapshot.data.docs[0].data();
+                            return Text(
+                              data['status'] ? "Online" : "Offline",
+                              style: TextStyle(
+                                  color: data['status']
+                                      ? Colors.green
+                                      : Colors.grey),
+                            );
+                          }
+                          return Text("non");
+                        }),
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         Expanded(
                           child: Text(
-                            this.message.lastMessage.length >= 15
-                                ? "${this.message.lastMessage.substring(0, 15)}...."
+                            this.message.lastMessage.length > 15
+                                ? this.message.lastMessage.substring(0, 15)
                                 : this.message.lastMessage,
                             overflow: TextOverflow.ellipsis,
                             maxLines: 2,
@@ -199,26 +190,22 @@ class MessageItemWidget extends StatelessWidget {
                                     : FontWeight.w800)),
                           ),
                         ),
-                        Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Text(
-                                DateFormat('dd-MM-yyyy', Get.locale.toString())
-                                    .format(DateTime.fromMillisecondsSinceEpoch(
-                                        this.message.lastMessageTime)),
-                                overflow: TextOverflow.fade,
-                                softWrap: false,
-                                style: Get.textTheme.caption,
-                              ),
-                              Text(
-                                DateFormat('HH:mm', Get.locale.toString())
-                                    .format(DateTime.fromMillisecondsSinceEpoch(
-                                        this.message.lastMessageTime)),
-                                overflow: TextOverflow.fade,
-                                softWrap: false,
-                                style: Get.textTheme.caption,
-                              ),
-                            ]),
+                        Text(
+                          DateFormat('dd-MM-yyyy ', Get.locale.toString())
+                              .format(DateTime.fromMillisecondsSinceEpoch(
+                                  this.message.lastMessageTime)),
+                          overflow: TextOverflow.fade,
+                          softWrap: false,
+                          style: Get.textTheme.caption,
+                        ),
+                        Text(
+                          DateFormat('HH:mm', Get.locale.toString()).format(
+                              DateTime.fromMillisecondsSinceEpoch(
+                                  this.message.lastMessageTime)),
+                          overflow: TextOverflow.fade,
+                          softWrap: false,
+                          style: Get.textTheme.caption,
+                        ),
                       ],
                     ),
                     SizedBox(

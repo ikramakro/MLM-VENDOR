@@ -5,28 +5,17 @@ import '../../../../common/ui.dart';
 import '../../../models/category_model.dart';
 import '../../../models/e_provider_model.dart';
 import '../../../models/e_provider_type_model.dart';
-import '../../../models/media_model.dart';
 import '../../../models/option_group_model.dart';
 import '../../../models/tax_model.dart';
 import '../../../models/user_model.dart';
 import '../../../repositories/category_repository.dart';
 import '../../../repositories/e_provider_repository.dart';
-import '../../../repositories/user_repository.dart';
 import '../../../routes/app_routes.dart';
-import '../../../services/auth_service.dart';
 import '../../global_widgets/multi_select_dialog.dart';
 import '../../global_widgets/select_dialog.dart';
 import '../../global_widgets/single_select_dialog.dart';
 
 class EProviderFormController extends GetxController {
-  GlobalKey<FormState> profileForm;
-  var avatar = new Media().obs;
-  var user = new User().obs;
-  final available_status = "Available to get orders".obs;
-  final availableStatusValueBool = true.obs;
-  final availableStatusValue = 1.obs;
-  UserRepository _userRepository;
-  final eProviderss = <EProvider>[].obs;
   final eProvider = EProvider().obs;
   final optionGroups = <OptionGroup>[].obs;
   final categories = <Category>[].obs;
@@ -43,32 +32,12 @@ class EProviderFormController extends GetxController {
   final selectedCategoryId = "".obs;
 
   EProviderFormController() {
-    _userRepository = new UserRepository();
     _eProviderRepository = new EProviderRepository();
     _categoryRepository = new CategoryRepository();
-  }
-  Future getEProviderss() async {
-    // try {
-    eProviderss.assignAll(await _eProviderRepository.getFull());
-    if (eProviderss[0].accept == 1) {
-      availableStatusValueBool.value = true;
-      availableStatusValue.value = 1;
-    } else if (eProviderss[0].accept == 3) {
-      availableStatusValueBool.value = false;
-      availableStatusValue.value = 3;
-    }
-    Get.log("this is the eprovider which is fetch in setting $eProviderss");
-    // } catch (e) {
-    //   Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
-    // }
   }
 
   @override
   void onInit() async {
-    getEProviderss();
-    user.value = Get.find<AuthService>().user.value;
-    avatar.value = new Media(thumb: user.value.avatar.thumb);
-    getEProviderss();
     getCategories();
     var arguments = Get.arguments as Map<String, dynamic>;
     if (arguments != null) {
@@ -149,11 +118,11 @@ class EProviderFormController extends GetxController {
   }
 
   Future getCategories() async {
-    // try {
-    categories.assignAll(await _categoryRepository.getAll());
-    // } catch (e) {
-    //   Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
-    // }
+    try {
+      categories.assignAll(await _categoryRepository.getAll());
+    } catch (e) {
+      Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+    }
   }
 
   Future getEProviders() async {
@@ -189,64 +158,6 @@ class EProviderFormController extends GetxController {
     return !eProvider.value.hasData;
   }
 
-  void availableEProvider() async {
-    try {
-      EProvider _eprovider = new EProvider(
-        id: eProviderss[0].id,
-        name: eProviderss[0].name,
-        availabilityRange: eProviderss[0].availabilityRange,
-        e_provider_type_id: 2,
-        accept: 1,
-      );
-      Get.log("check new provider Available details $_eprovider");
-
-      await _eProviderRepository.status(_eprovider);
-    } catch (e) {
-      Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
-    } finally {}
-  }
-
-  void unavailableEProvider() async {
-    try {
-      EProvider _eprovider = new EProvider(
-        id: eProviderss[0].id,
-        name: eProviderss[0].name,
-        availabilityRange: eProviderss[0].availabilityRange,
-        e_provider_type_id: 2,
-        accept: 3,
-      );
-      Get.log("check new provider unavailable details $_eprovider");
-
-      await _eProviderRepository.status(_eprovider);
-    } catch (e) {
-      Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
-    } finally {}
-  }
-
-  void saveImageAndAvailabel() async {
-    try {
-      user.value.avatar.id = avatar.value.id;
-
-      user.value = await _userRepository.update(user.value);
-      Get.find<AuthService>().user.value = user.value;
-    } catch (e) {
-      Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
-    } finally {}
-  }
-
-  void saveProfileForm() async {
-    Get.focusScope.unfocus();
-    if (eProviderss[0].accept != availableStatusValue.value) {
-      if (availableStatusValue.value == 1) {
-        await availableEProvider();
-      } else {
-        await unavailableEProvider();
-      }
-      // Get.log(
-      //     "eprovider accept is ${eProviders[0].accept.toString()} and setting status is ${availableStatusValue.value.toString()}");
-    }
-  }
-
   void createEProviderForm() async {
     Get.focusScope.unfocus();
     if (eProviderForm.currentState.validate()) {
@@ -255,8 +166,10 @@ class EProviderFormController extends GetxController {
         // eProvider.value.accepted = 1;
         final _eProvider = await _eProviderRepository.create(eProvider.value);
         eProvider.value.id = _eProvider.id;
-        await Get.toNamed(Routes.E_PROVIDER_AVAILABILITY_FORM,
-            arguments: {'eProvider': _eProvider});
+        Get.offNamedUntil(Routes.E_PROVIDERS,
+            (route) => route.settings.name == Routes.E_PROVIDERS);
+        // await Get.toNamed(Routes.E_PROVIDER_AVAILABILITY_FORM,
+        //     arguments: {'eProvider': _eProvider});
       } catch (e) {
         Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
       } finally {}
@@ -269,16 +182,13 @@ class EProviderFormController extends GetxController {
   void updateEProviderForm() async {
     Get.focusScope.unfocus();
     if (eProviderForm.currentState.validate()) {
-      eProviderForm.currentState.save();
       try {
         eProviderForm.currentState.save();
         final _eProvider = await _eProviderRepository.update(eProvider.value);
-        await saveProfileForm();
-        user.value.avatar.id = avatar.value.id;
-        user.value = await _userRepository.update(user.value);
-        Get.find<AuthService>().user.value = user.value;
-        await Get.toNamed(Routes.E_PROVIDER_AVAILABILITY_FORM,
-            arguments: {'eProvider': _eProvider});
+        Get.offNamedUntil(Routes.E_PROVIDERS,
+            (route) => route.settings.name == Routes.E_PROVIDERS);
+        // await Get.toNamed(Routes.E_PROVIDER_AVAILABILITY_FORM,
+        //     arguments: {'eProvider': _eProvider});
       } catch (e) {
         Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
       } finally {}

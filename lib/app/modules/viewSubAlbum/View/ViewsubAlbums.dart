@@ -7,13 +7,12 @@ import '../../../routes/app_routes.dart';
 import '../Controller/ViewSubAlbumController.dart';
 
 class ViewSubAlbums extends GetView<ViewSubAlbumsController> {
-  final name = Get.arguments['albumname'];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
           title: Text(
-            name,
+            "SubAlbums".tr,
             style: context.textTheme.headline6,
           ),
           centerTitle: true,
@@ -38,15 +37,10 @@ class ViewSubAlbums extends GetView<ViewSubAlbumsController> {
               itemBuilder: (context, index) {
                 return Obx(() => GestureDetector(
                       onTap: () {
-                        var _media = controller.album.elementAt(index);
-                        Get.toNamed(Routes.Edit_SubAlbum_View, arguments: {
+                        Get.toNamed(Routes.Edit_SubAlbum, arguments: {
                           'subAlbum': controller.album[index],
                           'hero': '${controller.heroTag}',
-                          'eProvider': controller.eProvider.value,
-                          'subAlbumName': name,
-                          'gallery': controller.album,
-                          'media': controller.album,
-                          'current': _media,
+                          'eProvider': controller.eProvider.value
                         });
                         print(controller.album[index]);
                       },

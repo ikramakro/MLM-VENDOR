@@ -8,7 +8,6 @@ import '../../root/controllers/root_controller.dart';
 class NotificationsController extends GetxController {
   final notifications = <Notification>[].obs;
   NotificationRepository _notificationRepository;
-  final list = [].obs;
 
   NotificationsController() {
     _notificationRepository = new NotificationRepository();
@@ -24,20 +23,13 @@ class NotificationsController extends GetxController {
     await getNotifications();
     Get.find<RootController>().getNotificationsCount();
     if (showMessage == true) {
-      Get.showSnackbar(Ui.SuccessSnackBar(
-          message: "List of notifications refreshed successfully".tr));
+      Get.showSnackbar(Ui.SuccessSnackBar(message: "List of notifications refreshed successfully".tr));
     }
   }
 
   Future getNotifications() async {
     try {
       notifications.assignAll(await _notificationRepository.getAll());
-      // for (int i = 0; i <= notifications.length; i++) {
-      //   if (notifications[i].type == 'App\\Notifications\\NewMessage') {
-      //     list.add(i);
-      //     Get.log("counter is ${list.length}");
-      //   } else {}
-      // }
     } catch (e) {
       Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
     }

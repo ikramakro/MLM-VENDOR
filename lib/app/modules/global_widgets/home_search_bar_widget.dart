@@ -24,20 +24,19 @@ class HomeSearchBarWidget extends StatelessWidget implements PreferredSize {
           },
           child: Row(
             children: <Widget>[
-              // Padding(
-              //   padding: const EdgeInsets.only(right: 12, left: 0),
-              //   child:
-              //       Icon(Icons.search, color: Get.theme.colorScheme.secondary),
-              // ),
-              // Expanded(
-              //   child: Text(
-              //     "Search for home service...".tr,
-              //     maxLines: 1,
-              //     softWrap: false,
-              //     overflow: TextOverflow.fade,
-              //     style: Get.textTheme.caption,
-              //   ),
-              // ),
+              Padding(
+                padding: const EdgeInsets.only(right: 12, left: 0),
+                child: Icon(Icons.search, color: Get.theme.colorScheme.secondary),
+              ),
+              Expanded(
+                child: Text(
+                  "Search for home service...".tr,
+                  maxLines: 1,
+                  softWrap: false,
+                  overflow: TextOverflow.fade,
+                  style: Get.textTheme.caption,
+                ),
+              ),
               SizedBox(width: 8),
               GestureDetector(
                 onTap: () {
@@ -47,8 +46,7 @@ class HomeSearchBarWidget extends StatelessWidget implements PreferredSize {
                   );
                 },
                 child: Container(
-                  padding: const EdgeInsets.only(
-                      right: 10, left: 10, top: 10, bottom: 10),
+                  padding: const EdgeInsets.only(right: 10, left: 10, top: 10, bottom: 10),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.all(Radius.circular(8)),
                     color: Get.theme.focusColor.withOpacity(0.1),

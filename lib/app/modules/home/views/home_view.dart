@@ -30,87 +30,80 @@ class HomeView extends GetView<HomeController> with WidgetsBindingObserver {
               slivers: <Widget>[
                 Obx(() {
                   return SliverAppBar(
-                      backgroundColor:
-                          Theme.of(context).scaffoldBackgroundColor,
-                      expandedHeight: 230,
-                      elevation: 0.5,
-                      floating: false,
-                      iconTheme: IconThemeData(color: Get.theme.primaryColor),
-                      title: Text(
-                        Get.find<SettingsService>()
-                            .setting
-                            .value
-                            .providerAppName,
-                        style: Get.textTheme.headline6,
-                      ),
-                      centerTitle: true,
-                      automaticallyImplyLeading: false,
-                      leading: new IconButton(
-                        icon: new Icon(Icons.sort, color: Colors.black87),
-                        onPressed: () => {Scaffold.of(context).openDrawer()},
-                      ),
-                      actions: [NotificationsButtonWidget()],
-                      bottom: controller.bookingStatuses.isEmpty
-                          ? TabBarLoadingWidget()
-                          : TabBarWidget(
-                              tag: 'home',
-                              initialSelectedId:
-                                  controller.bookingStatuses.elementAt(0).id,
-                              tabs: List.generate(
-                                  controller.bookingStatuses.length, (index) {
-                                var _status =
-                                    controller.bookingStatuses.elementAt(index);
+                    backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                    expandedHeight: 290,
+                    elevation: 0.5,
+                    floating: false,
+                    iconTheme: IconThemeData(color: Get.theme.primaryColor),
+                    title: Text(
+                      Get.find<SettingsService>().setting.value.providerAppName,
+                      style: Get.textTheme.headline6,
+                    ),
+                    centerTitle: true,
+                    automaticallyImplyLeading: false,
+                    leading: new IconButton(
+                      icon: new Icon(Icons.sort, color: Colors.black87),
+                      onPressed: () => {Scaffold.of(context).openDrawer()},
+                    ),
+                    actions: [NotificationsButtonWidget()],
+                    bottom: controller.bookingStatuses.isEmpty
+                        ? TabBarLoadingWidget()
+                        : TabBarWidget(
+                            tag: 'home',
+                            initialSelectedId:
+                                controller.bookingStatuses.elementAt(0).id,
+                            tabs: List.generate(
+                                controller.bookingStatuses.length, (index) {
+                              var _status =
+                                  controller.bookingStatuses.elementAt(index);
 
-                                if (_status.status.toString() ==
-                                    "Accept - Del") {
-                                  return SizedBox(
-                                    width: 0,
-                                  );
-                                } else if (_status.status.toString() ==
-                                    "In Progress") {
-                                  return ChipWidget(
-                                    tag: 'home',
-                                    text: _status.status, //_status.status,
-                                    id: _status.id,
-                                    onSelected: (id) {
-                                      controller.changeTab(id);
-                                    },
-                                  );
-                                } else if (_status.status.toString() ==
-                                    "In Delivery") {
-                                  return ChipWidget(
-                                    tag: 'home',
-                                    text: _status.status, //_status.status,
-                                    id: _status.id,
-                                    onSelected: (id) {
-                                      controller.changeTab(id);
-                                    },
-                                  );
-                                } else if (_status.status.toString() ==
-                                    "Ready") {
-                                  return SizedBox(
-                                    width: 0,
-                                  );
-                                }
+                              if (_status.status.toString() == "Accept - Del") {
+                                return SizedBox(
+                                  width: 0,
+                                );
+                              } else if (_status.status.toString() ==
+                                  "In Delivery") {
                                 return ChipWidget(
                                   tag: 'home',
-                                  text: _status.status,
+                                  text: "In Progress",
                                   id: _status.id,
                                   onSelected: (id) {
                                     controller.changeTab(id);
                                   },
                                 );
-                              }),
-                            ),
-                      flexibleSpace: FlexibleSpaceBar(
+                              } else if (_status.status.toString() ==
+                                  "In Progress") {
+                                return ChipWidget(
+                                  tag: 'home',
+                                  text: "In Delivery",
+                                  id: _status.id,
+                                  onSelected: (id) {
+                                    controller.changeTab(id);
+                                  },
+                                );
+                              } else if (_status.status.toString() == "Ready") {
+                                return SizedBox(
+                                  width: 0,
+                                );
+                              }
+                              return ChipWidget(
+                                tag: 'home',
+                                text: _status.status,
+                                id: _status.id,
+                                onSelected: (id) {
+                                  controller.changeTab(id);
+                                },
+                              );
+                            }),
+                          ),
+                    flexibleSpace: FlexibleSpaceBar(
                         collapseMode: CollapseMode.parallax,
                         background: StatisticsCarouselWidget(
                           totalRequestCompleted:
                               controller.totalRequestsCompleted.value,
                           statisticsList: controller.statistics,
-                        ),
-                      ) //.paddingOnly(top: 70, bottom: 50)),
-                      );
+                        ).paddingOnly(top: 70, bottom: 50)),
+                  );
                 }),
                 SliverToBoxAdapter(
                   child: Wrap(

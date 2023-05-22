@@ -14,15 +14,7 @@ class Option extends Model {
   String description;
   var checked = false.obs;
 
-  Option(
-      {this.id,
-      this.optionGroupId,
-      this.eServiceId,
-      this.name,
-      this.price,
-      this.image,
-      this.description,
-      this.checked});
+  Option({this.id, this.optionGroupId, this.eServiceId, this.name, this.price, this.image, this.description, this.checked});
 
   Option.fromJson(Map<String, dynamic> json) {
     super.fromJson(json);
@@ -66,13 +58,5 @@ class Option extends Model {
 
   @override
   int get hashCode =>
-      super.hashCode ^
-      id.hashCode ^
-      optionGroupId.hashCode ^
-      eServiceId.hashCode ^
-      name.hashCode ^
-      price.hashCode ^
-      image.hashCode ^
-      description.hashCode ^
-      checked.hashCode;
+      super.hashCode ^ id.hashCode ^ optionGroupId.hashCode ^ eServiceId.hashCode ^ name.hashCode ^ price.hashCode ^ image.hashCode ^ description.hashCode ^ checked.hashCode;
 }

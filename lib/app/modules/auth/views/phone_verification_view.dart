@@ -21,16 +21,14 @@ class PhoneVerificationView extends GetView<AuthController> {
           appBar: AppBar(
             title: Text(
               "Phone Verification".tr,
-              style: Get.textTheme.headline6
-                  .merge(TextStyle(color: context.theme.primaryColor)),
+              style: Get.textTheme.headline6.merge(TextStyle(color: context.theme.primaryColor)),
             ),
             centerTitle: true,
             backgroundColor: Get.theme.colorScheme.secondary,
             automaticallyImplyLeading: false,
             elevation: 0,
             leading: new IconButton(
-              icon:
-                  new Icon(Icons.arrow_back_ios, color: Get.theme.primaryColor),
+              icon: new Icon(Icons.arrow_back_ios, color: Get.theme.primaryColor),
               onPressed: () => {Get.back()},
             ),
           ),
@@ -45,13 +43,9 @@ class PhoneVerificationView extends GetView<AuthController> {
                     width: Get.width,
                     decoration: BoxDecoration(
                       color: Get.theme.colorScheme.secondary,
-                      borderRadius:
-                          BorderRadius.vertical(bottom: Radius.circular(10)),
+                      borderRadius: BorderRadius.vertical(bottom: Radius.circular(10)),
                       boxShadow: [
-                        BoxShadow(
-                            color: Get.theme.focusColor.withOpacity(0.2),
-                            blurRadius: 10,
-                            offset: Offset(0, 5)),
+                        BoxShadow(color: Get.theme.focusColor.withOpacity(0.2), blurRadius: 10, offset: Offset(0, 5)),
                       ],
                     ),
                     margin: EdgeInsets.only(bottom: 50),
@@ -61,14 +55,12 @@ class PhoneVerificationView extends GetView<AuthController> {
                         children: [
                           Text(
                             _settings.providerAppName,
-                            style: Get.textTheme.headline6.merge(TextStyle(
-                                color: Get.theme.primaryColor, fontSize: 24)),
+                            style: Get.textTheme.headline6.merge(TextStyle(color: Get.theme.primaryColor, fontSize: 24)),
                           ),
                           SizedBox(height: 5),
                           Text(
                             "Welcome to the best service provider system!".tr,
-                            style: Get.textTheme.caption.merge(
-                                TextStyle(color: Get.theme.primaryColor)),
+                            style: Get.textTheme.caption.merge(TextStyle(color: Get.theme.primaryColor)),
                             textAlign: TextAlign.center,
                           ),
                           // Text("Fill the following credentials to login your account", style: Get.textTheme.caption.merge(TextStyle(color: Get.theme.primaryColor))),
@@ -79,8 +71,7 @@ class PhoneVerificationView extends GetView<AuthController> {
                   Container(
                     decoration: Ui.getBoxDecoration(
                       radius: 14,
-                      border:
-                          Border.all(width: 5, color: Get.theme.primaryColor),
+                      border: Border.all(width: 5, color: Get.theme.primaryColor),
                     ),
                     child: ClipRRect(
                       borderRadius: BorderRadius.all(Radius.circular(10)),
@@ -102,16 +93,14 @@ class PhoneVerificationView extends GetView<AuthController> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       Text(
-                        "We sent the OTP code to your phone, please check it and enter below"
-                            .tr,
+                        "We sent the OTP code to your phone, please check it and enter below".tr,
                         style: Get.textTheme.bodyText1,
                         textAlign: TextAlign.center,
                       ).paddingSymmetric(horizontal: 20, vertical: 20),
                       TextFieldWidget(
                         labelText: "OTP Code".tr,
                         hintText: "- - - - - -".tr,
-                        style: Get.textTheme.headline4
-                            .merge(TextStyle(letterSpacing: 8)),
+                        style: Get.textTheme.headline4.merge(TextStyle(letterSpacing: 8)),
                         textAlign: TextAlign.center,
                         keyboardType: TextInputType.number,
                         onChanged: (input) => controller.smsSent.value = input,
@@ -119,16 +108,12 @@ class PhoneVerificationView extends GetView<AuthController> {
                       ),
                       BlockButtonWidget(
                         onPressed: () async {
-                          await controller.verifyPhone().then((value) =>
-                              Get.showSnackbar(Ui.SuccessSnackBar(
-                                  message:
-                                      "E-Mail verification link was sent successfully to your MailBox")));
+                          await controller.verifyPhone();
                         },
                         color: Get.theme.colorScheme.secondary,
                         text: Text(
                           "Verify".tr,
-                          style: Get.textTheme.headline6
-                              .merge(TextStyle(color: Get.theme.primaryColor)),
+                          style: Get.textTheme.headline6.merge(TextStyle(color: Get.theme.primaryColor)),
                         ),
                       ).paddingSymmetric(vertical: 30, horizontal: 20),
                       Row(

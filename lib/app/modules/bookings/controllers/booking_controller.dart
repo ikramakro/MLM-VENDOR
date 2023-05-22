@@ -1,9 +1,9 @@
 import 'dart:async';
-import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
 import '../../../../common/ui.dart';
 import '../../../models/booking_model.dart';
 import '../../../models/booking_status_model.dart';
@@ -20,7 +20,6 @@ import '../../../repositories/payment_repository.dart';
 import '../../../routes/app_routes.dart';
 import '../../../services/global_service.dart';
 import '../../home/controllers/home_controller.dart';
-import 'package:http/http.dart' as http;
 
 class BookingController extends GetxController {
   BookingRepository _bookingRepository;
@@ -31,6 +30,7 @@ class BookingController extends GetxController {
   final booking = Booking().obs;
   final bookingExtra = 0.0.obs;
   final bookingExtraString = ''.obs;
+  final bookingDes = ''.obs;
   final InitialDate = DateTime.now().obs;
   final Date = "".obs;
   var messages = <Message>[].obs;
@@ -42,12 +42,8 @@ class BookingController extends GetxController {
   final ListCharges = <Charge>[].obs;
   final ChargesName = "".obs;
   final ChargesPrice = "".obs;
-  final bookingDes = ''.obs;
   GlobalKey<FormState> ChargeForm = new GlobalKey<FormState>();
   GlobalKey<FormState> ChargeForm1 = new GlobalKey<FormState>();
-  DateTime picked = null;
-  final isDateUpdate = false.obs;
-  final isPriceUpdate = false.obs;
 
   BookingController() {
     _bookingRepository = BookingRepository();
@@ -56,11 +52,8 @@ class BookingController extends GetxController {
   }
 
   @override
-  void onInit() {
+  void onInit() async {
     booking.value = Get.arguments as Booking;
-    isDateUpdate.value = false;
-    isPriceUpdate.value = false;
-    // await getBooking();
     super.onInit();
   }
 
@@ -70,8 +63,8 @@ class BookingController extends GetxController {
     super.onReady();
   }
 
-  Future<DateTime> showMyDatePicker(BuildContext context) async {
-    picked = await showDatePicker(
+  Future<Null> showMyDatePicker(BuildContext context) async {
+    final DateTime picked = await showDatePicker(
       context: context,
       initialDate: booking.value.bookingAt,
       firstDate: DateTime(2000),
@@ -89,40 +82,35 @@ class BookingController extends GetxController {
       },
     );
     if (picked != null) {
-      Get.log(" After String $InitialDate");
       InitialDate.value = DateTime(picked.year, picked.month, picked.day);
-      Get.log("Before  String $InitialDate");
       String date = DateTime(picked.year, picked.month, picked.day).toString();
-
       var dateTime = DateTime.parse(date);
-
-      var format = "${dateTime.day}-${dateTime.month}-${dateTime.year}";
-      Get.log(" Date String $format");
+      DateTime Datex = DateTime(picked.year, picked.month, picked.day);
+      var format = "${dateTime.year}-${dateTime.month}-${dateTime.day}";
       Date.value = format;
       // booking.update((val) {
       //   val.bookingAt = Datex;
       // });
-      Get.log("pick date is${format}");
+      print("pick date is${format}");
 
-      // booking.update((val) {
-      //   val.bookingAt = DateTime(picked.year, picked.month, picked.day,
-      //       val.bookingAt.hour, val.bookingAt.minute);
-      // });
-      // DateInBooking(booking.value.bookingAt);
-      isDateUpdate.value = true;
-      return picked;
-    } else {
-      isDateUpdate.value = false;
-      return picked = null;
+      booking.update((val) {
+        val.bookingAt = DateTime(picked.year, picked.month, picked.day,
+            val.bookingAt.hour, val.bookingAt.minute);
+      });
+      DateInBooking(booking.value.bookingAt);
     }
   }
 
-  void updateBookingDate() {
-    booking.update((val) {
-      val.bookingAt = DateTime(picked.year, picked.month, picked.day,
-          val.bookingAt.hour, val.bookingAt.minute);
-    });
-    DateInBooking(booking.value.bookingAt);
+  Future<void> DateInBooking(DateTime bookingDate) async {
+    try {
+      final _booking = new Booking(
+        bookingAt: bookingDate,
+      );
+
+      await _bookingRepository.updateDate(_booking, booking.value.id);
+    } catch (e) {
+      Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+    }
   }
 
   Future<void> DescriptionInBooking(String description) async {
@@ -134,18 +122,6 @@ class BookingController extends GetxController {
         val.hint = description;
       });
       await _bookingRepository.descriptionDate(_booking, booking.value.id);
-    } catch (e) {
-      Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
-    }
-  }
-
-  Future<void> DateInBooking(DateTime bookingDate) async {
-    try {
-      final _booking = new Booking(
-        bookingAt: bookingDate,
-      );
-
-      await _bookingRepository.updateDate(_booking, booking.value.id);
     } catch (e) {
       Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
     }
@@ -178,7 +154,6 @@ class BookingController extends GetxController {
   Future<void> getBooking() async {
     try {
       booking.value = await _bookingRepository.get(booking.value.id);
-      print("extra is ${booking.value.extra}");
       if (booking.value.status ==
               Get.find<HomeController>().getStatusByOrder(
                   Get.find<GlobalService>().global.value.inProgress) &&
@@ -214,18 +189,18 @@ class BookingController extends GetxController {
   Future ExtraInBooking() async {
     print("this is runnning check this booking");
     // print("List ${priceController.text}");
-    Get.log("$bookingExtra");
-    Get.log("${booking.value.getSubtotal()}");
+    print("$bookingExtra");
+    print("${booking.value.getSubtotal()}");
     bookingExtra.value = double.parse(bookingExtraString.value);
     bookingExtra.value = bookingExtra.value - booking.value.getSubtotal();
-    Get.log("extra is this ${bookingExtra.value}");
+    print("extra is this ${bookingExtra.value}");
     try {
       final _booking = new Booking(
         extra: bookingExtra.value,
       );
-      Get.log("check extra charges ${_booking.extra}");
+      print("check extra charges ${_booking.extra}");
 
-      Get.log("check this booking ${bookingExtra}");
+      print("check this booking ${bookingExtra}");
       await _bookingRepository.updateExtra(_booking, booking.value.id);
       booking.update((val) {
         val.extra = bookingExtra.value;
@@ -239,14 +214,14 @@ class BookingController extends GetxController {
     if (booking.value.status.order ==
         Get.find<GlobalService>().global.value.received) {
       final _status = Get.find<HomeController>()
-          .getStatusByOrder(Get.find<GlobalService>().global.value.onTheWay);
+          .getStatusByOrder(Get.find<GlobalService>().global.value.accepted);
       await changeBookingStatus(_status);
     }
   }
 
   Future<void> onTheWayBookingService() async {
     final _status = Get.find<HomeController>()
-        .getStatusByOrder(Get.find<GlobalService>().global.value.inProgress);
+        .getStatusByOrder(Get.find<GlobalService>().global.value.onTheWay);
     await changeBookingStatus(_status);
   }
 
@@ -260,7 +235,7 @@ class BookingController extends GetxController {
     final _status = Get.find<HomeController>()
         .getStatusByOrder(Get.find<GlobalService>().global.value.done);
     await changeBookingStatus(_status);
-    // await createPaymentBookingService();
+    await createPaymentBookingService();
   }
 
   Future<void> confirmPaymentBookingService() async {
@@ -341,11 +316,14 @@ class BookingController extends GetxController {
   }
 
   Future listenForMessages(Booking booking) async {
+    print("booking id for get chat ${booking.id}");
     final _userMessages = await getVendorMessagesStartAt(booking);
 
     if (_userMessages.docs.isNotEmpty) {
       _userMessages.docs.forEach((element) {
         messages.add(Message.fromDocumentSnapshot(element));
+        print("lesson for massages");
+        print(messages);
         Get.toNamed(Routes.CHAT, arguments: messages[0]);
       });
       lastDocument.value = _userMessages.docs.last;
@@ -365,8 +343,6 @@ class BookingController extends GetxController {
   }
 
   Future<void> startChat() async {
-    // await getBooking();
-    Get.log('=========>>>>>>>>>>>${booking.value.toString()}');
     List<User> _employees =
         await _eProviderRepository.getEmployees(booking.value.eProvider.id);
     _employees = _employees
@@ -384,38 +360,5 @@ class BookingController extends GetxController {
     Message _message = new Message(_employees,
         name: booking.value.eProvider.name, bookingID: booking.value.id);
     Get.toNamed(Routes.CHAT, arguments: _message);
-  }
-
-  getDeviceTokenfromfirebase() {
-    final fireStore = FirebaseFirestore.instance
-        .collection('Device Token')
-        .doc(booking.value.id)
-        .get();
-
-    print('======================.>>>>>$fireStore');
-  }
-
-  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
-
-  void sendNotification(String deviceToken, String title, String body) async {
-    const postUrl = 'https://fcm.googleapis.com/fcm/send';
-    final data = {
-      "notification": {"body": body, "title": title},
-      "priority": "high",
-      "data": {
-        "click_action": "FLUTTER_NOTIFICATION_CLICK",
-        "id": "1",
-        "status": "done"
-      },
-      "to": deviceToken
-    };
-    final headers = {
-      'content-type': 'application/json',
-      'Authorization':
-          'key=AAAA1v9SiQw:APA91bGQS4VCsacFk9oycGrDDxMFsymmLX_XyP05TGv9KDLdmLB03Y2JidqeGjHRLMBFAGMZpWWiL7BHj1cuBfiJXvdUrYnbb22GxMSFgTPVQE0X0gJ7r_pu3UMZ7ecXKIephkuPy4_k'
-    };
-
-    await http.post(Uri.parse(postUrl),
-        body: json.encode(data), headers: headers);
   }
 }

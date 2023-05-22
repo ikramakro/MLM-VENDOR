@@ -15,13 +15,11 @@ class StatisticCarouselItemWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsetsDirectional.only(
-          start: this.marginLeft, end: 10, top: 75, bottom: 75),
-      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+          start: this.marginLeft, end: 10, top: 25, bottom: 25),
+      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 40),
       decoration: Ui.getBoxDecoration(color: Get.theme.primaryColor),
-      height: 100,
-      width: 90,
+      width: 100,
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           if (statistic.description == "total_earning")
             Ui.getPrice(double.tryParse(statistic.value),

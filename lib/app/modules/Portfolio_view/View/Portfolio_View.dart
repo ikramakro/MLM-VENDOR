@@ -52,10 +52,10 @@ class PortfolioView extends GetView<AlbumViewController> {
                       itemCount: controller.galleries.length,
                       scrollDirection: Axis.vertical,
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
+                          crossAxisCount: 3,
                           mainAxisExtent: 110,
-                          crossAxisSpacing: 7.0,
-                          mainAxisSpacing: 7.0),
+                          crossAxisSpacing: 5.0,
+                          mainAxisSpacing: 5.0),
                       itemBuilder: (context, index) {
                         return GestureDetector(
                           onLongPress: () {
@@ -65,13 +65,10 @@ class PortfolioView extends GetView<AlbumViewController> {
                           onTap: () {
                             print(
                                 "this is the description of image ${controller.galleries[index]}");
-                            var _media = controller.galleries.elementAt(index);
-                            Get.toNamed(Routes.Edit_Portfolio_View, arguments: {
+                            Get.toNamed(Routes.Edit_Portfolio, arguments: {
                               'gallery': controller.galleries[index],
                               'hero': 'portfolio',
-                              'eProvider': controller.eProvider.value,
-                              'media': controller.galleries,
-                              'current': _media,
+                              'eProvider': controller.eProvider.value
                             });
                           },
                           child: Hero(
@@ -110,7 +107,7 @@ class PortfolioView extends GetView<AlbumViewController> {
                           scrollDirection: Axis.vertical,
                           gridDelegate:
                               SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: 2,
+                                  crossAxisCount: 3,
                                   mainAxisExtent: 160,
                                   crossAxisSpacing: 5.0,
                                   mainAxisSpacing: 5.0),

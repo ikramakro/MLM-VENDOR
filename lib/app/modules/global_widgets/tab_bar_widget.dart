@@ -29,17 +29,9 @@ class TabBarController extends GetxController {
 }
 
 class TabBarWidget extends StatelessWidget implements PreferredSize {
-  TabBarWidget(
-      {Key key,
-      @required this.tag,
-      @required this.tabs,
-      @required this.initialSelectedId}) {
-    tabs[0] = Padding(
-        padding: EdgeInsetsDirectional.only(start: 15),
-        child: tabs.elementAt(0));
-    tabs[tabs.length - 1] = Padding(
-        padding: EdgeInsetsDirectional.only(end: 15),
-        child: tabs[tabs.length - 1]);
+  TabBarWidget({Key key, @required this.tag, @required this.tabs, @required this.initialSelectedId}) {
+    tabs[0] = Padding(padding: EdgeInsetsDirectional.only(start: 15), child: tabs.elementAt(0));
+    tabs[tabs.length - 1] = Padding(padding: EdgeInsetsDirectional.only(end: 15), child: tabs[tabs.length - 1]);
   }
 
   final String tag;
@@ -53,13 +45,8 @@ class TabBarWidget extends StatelessWidget implements PreferredSize {
     }
     return Container(
       alignment: AlignmentDirectional.centerStart,
-      height: 55,
-      // color: Colors.red,
-      child: ListView(
-          primary: false,
-          shrinkWrap: true,
-          scrollDirection: Axis.horizontal,
-          children: tabs),
+      height: 60,
+      child: ListView(primary: false, shrinkWrap: true, scrollDirection: Axis.horizontal, children: tabs),
     );
   }
 
@@ -89,12 +76,10 @@ class TabBarLoadingWidget extends StatelessWidget implements PreferredSize {
           (index) => RawChip(
             elevation: 0,
             label: Text(''),
-            padding: EdgeInsets.symmetric(
-                horizontal: 20.0 * (index + 1), vertical: 15),
+            padding: EdgeInsets.symmetric(horizontal: 20.0 * (index + 1), vertical: 15),
             backgroundColor: Get.theme.focusColor.withOpacity(0.1),
             selectedColor: Get.theme.colorScheme.secondary,
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
             showCheckmark: false,
             pressElevation: 0,
           ).marginSymmetric(horizontal: 15),
@@ -132,15 +117,11 @@ class ChipWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(TabBarController(), tag: tag, permanent: true);
-
     return Obx(() {
       return RawChip(
         elevation: 0,
         label: Text(text),
-        labelStyle: controller.isSelected(this.id)
-            ? Get.textTheme.bodyText2
-                .merge(TextStyle(color: Get.theme.primaryColor))
-            : Get.textTheme.bodyText2,
+        labelStyle: controller.isSelected(this.id) ? Get.textTheme.bodyText2.merge(TextStyle(color: Get.theme.primaryColor)) : Get.textTheme.bodyText2,
         padding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
         backgroundColor: Get.theme.focusColor.withOpacity(0.1),
         selectedColor: Get.theme.colorScheme.secondary,

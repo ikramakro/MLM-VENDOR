@@ -1,28 +1,25 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:home_services_provider/app/modules/messages/views/chats_view.dart';
 import 'package:intl/intl.dart' show DateFormat;
 
 import '../../../../common/ui.dart';
 import '../../../models/booking_model.dart';
-import '../../../models/media_model.dart';
-import '../../../models/message_model.dart';
-import '../../../models/user_model.dart';
-import '../../../repositories/e_provider_repository.dart';
 import '../../../routes/app_routes.dart';
+import '../../bookings/controllers/booking_controller.dart';
+import '../../messages/views/messages_view.dart';
 import 'booking_options_popup_menu_widget.dart';
 
 class BookingsListItemWidget extends StatelessWidget {
-  BookingsListItemWidget({
+  const BookingsListItemWidget({
     Key key,
     @required Booking booking,
   })  : _booking = booking,
         super(key: key);
 
   final Booking _booking;
-  var messages = <Message>[];
-  Rx<DocumentSnapshot> lastDocument = new Rx<DocumentSnapshot>(null);
+
   @override
   Widget build(BuildContext context) {
     Color _color = _booking.cancel
@@ -46,8 +43,8 @@ class BookingsListItemWidget extends StatelessWidget {
                       topLeft: Radius.circular(10),
                       topRight: Radius.circular(10)),
                   child: CachedNetworkImage(
-                    height: 70,
-                    width: 70,
+                    height: 80,
+                    width: 80,
                     fit: BoxFit.cover,
                     imageUrl: _booking.eService.firstImageThumb,
                     placeholder: (context, url) => Image.asset(
@@ -62,7 +59,7 @@ class BookingsListItemWidget extends StatelessWidget {
                 ),
                 if (_booking.payment != null)
                   Container(
-                    width: 70,
+                    width: 80,
                     child: Text(_booking.payment.paymentStatus?.status ?? '',
                         style: Get.textTheme.caption.merge(
                           TextStyle(fontSize: 10),
@@ -74,13 +71,13 @@ class BookingsListItemWidget extends StatelessWidget {
                     decoration: BoxDecoration(
                       color: Get.theme.focusColor.withOpacity(0.2),
                     ),
-                    padding: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
+                    padding: EdgeInsets.symmetric(horizontal: 5, vertical: 6),
                   ),
                 Container(
-                  width: 70,
+                  width: 80,
                   child: Column(
                     children: [
-                      Text("ID ${_booking.id}",
+                      Text("#${_booking.id}",
                           maxLines: 1,
                           style: Get.textTheme.bodyText2.merge(
                             TextStyle(
@@ -113,11 +110,11 @@ class BookingsListItemWidget extends StatelessWidget {
                         bottomRight: Radius.circular(10),
                         bottomLeft: Radius.circular(10)),
                   ),
-                  padding: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
+                  padding: EdgeInsets.symmetric(horizontal: 5, vertical: 6),
                 ),
               ],
             ),
-            SizedBox(width: 8),
+            SizedBox(width: 12),
             Expanded(
               child: Opacity(
                 opacity: _booking.cancel ? 0.3 : 1,
@@ -138,7 +135,7 @@ class BookingsListItemWidget extends StatelessWidget {
                         BookingOptionsPopupMenuWidget(booking: _booking),
                       ],
                     ),
-                    Divider(height: 1, thickness: 2),
+                    Divider(height: 8, thickness: 1),
                     Row(
                       children: [
                         Expanded(
@@ -189,44 +186,16 @@ class BookingsListItemWidget extends StatelessWidget {
                           children: [
                             MaterialButton(
                               onPressed: () async {
-                                listenforMessages(_booking);
-                                EProviderRepository _eProviderRepository =
-                                    EProviderRepository();
-                                List<User> _employees =
-                                    await _eProviderRepository
-                                        .getEmployees(_booking.eProvider.id);
-                                _employees = _employees
-                                    .map((e) {
-                                      if (_booking
-                                          .eProvider.images.isNotEmpty) {
-                                        e.avatar = _booking.eProvider.images[0];
-                                      } else {
-                                        e.avatar = new Media();
-                                      }
-                                      return e;
-                                    })
-                                    .toSet()
-                                    .toList();
-                                _employees.insert(0, _booking.user);
-                                Message _message = new Message(_employees,
-                                    name: _booking.eProvider.name,
-                                    bookingID: _booking.id);
-                                Get.toNamed(Routes.CHAT, arguments: _message);
+                                await Get.put(BookingController());
+                                BookingController bookingController =
+                                    await Get.find<BookingController>();
+                                bookingController.messages.value = [];
+                                bool chatExist = await bookingController
+                                    .listenForMessages(_booking);
 
-                                // Get.toNamed(Routes.BOOKING,
-                                //     arguments: _booking);
-
-                                // await Get.put(BookingController());
-                                // BookingController bookingController =
-                                //     await Get.find<BookingController>();
-                                // bookingController.messages.value = [];
-                                // Get.log(_booking.toString());
-                                // bool chatExist = await bookingController
-                                //     .listenForMessages(_booking);
-
-                                // if (chatExist == false) {
-                                //   bookingController.startChat();
-                                // }
+                                if (chatExist == false) {
+                                  bookingController.startChat();
+                                }
                                 // bookingController.startChat();
                                 // Get.to(
                                 //   () => MessagesView(),
@@ -250,7 +219,7 @@ class BookingsListItemWidget extends StatelessWidget {
                         ),
                       ],
                     ),
-                    Divider(height: 1, thickness: 2),
+                    Divider(height: 8, thickness: 1),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -285,22 +254,5 @@ class BookingsListItemWidget extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  Future listenforMessages(Booking booking) async {
-    final _userMessages = await FirebaseFirestore.instance
-        .collection("messages")
-        .where('bookingID', isEqualTo: _booking.id)
-        .get();
-    if (_userMessages.docs.isNotEmpty) {
-      _userMessages.docs.forEach((element) {
-        messages.add(Message.fromDocumentSnapshot(element));
-        Get.toNamed(Routes.CHAT, arguments: messages[0]);
-      });
-      lastDocument.value = _userMessages.docs.last;
-      return true;
-    } else {
-      return false;
-    }
   }
 }
