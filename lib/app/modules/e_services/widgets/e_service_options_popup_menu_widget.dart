@@ -79,22 +79,22 @@ class EServiceOptionsPopupMenuWidget extends GetView<EServicesController> {
             ),
           ),
         );
-        // list.add(
-        //   PopupMenuItem(
-        //     value: "delete",
-        //     child: Row(
-        //       crossAxisAlignment: CrossAxisAlignment.center,
-        //       children: [
-        //         Icon(Icons.delete_outline, color: Colors.redAccent),
-        //         SizedBox(width: 10),
-        //         Text(
-        //           "Delete Service".tr,
-        //           style: TextStyle(color: Colors.redAccent),
-        //         ),
-        //       ],
-        //     ),
-        //   ),
-        // );
+        list.add(
+          PopupMenuItem(
+            value: "delete",
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Icon(Icons.delete_outline, color: Colors.redAccent),
+                SizedBox(width: 10),
+                Text(
+                  "Delete Service".tr,
+                  style: TextStyle(color: Colors.redAccent),
+                ),
+              ],
+            ),
+          ),
+        );
         return list;
       },
       child: Icon(

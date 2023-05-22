@@ -7,10 +7,14 @@ import '../../../models/media_model.dart';
 import '../../../models/user_model.dart';
 import '../../../repositories/e_provider_repository.dart';
 import '../../../repositories/user_repository.dart';
+import '../../../routes/app_routes.dart';
 import '../../../services/auth_service.dart';
 import '../../global_widgets/select_dialog.dart';
+import 'package:dio/dio.dart' as dio;
 
 class ProfileController extends GetxController {
+  TextEditingController passwordcontroller = TextEditingController();
+  final val = false.obs;
   var user = new User().obs;
   var avatar = new Media().obs;
   var portfolio = new Media().obs;
@@ -198,37 +202,57 @@ class ProfileController extends GetxController {
       } else {
         await unavailableEProvider();
       }
-      Get.back();
       // print(
       //     "eprovider accept is ${eProviders[0].accept.toString()} and setting status is ${availableStatusValue.value.toString()}");
     }
     if (profileForm.currentState.validate()) {
-      try {
-        profileForm.currentState.save();
-        user.value.deviceToken = null;
-        user.value.password = newPassword.value == confirmPassword.value
-            ? newPassword.value
-            : null;
-        user.value.avatar.id = avatar.value.id;
-        // if (Get.find<SettingsService>().setting.value.enableOtp) {
-        //   await _userRepository.sendCodeToPhone();
-        //   Get.bottomSheet(
-        //     PhoneVerificationBottomSheetWidget(),
-        //     isScrollControlled: false,
-        //   );
-        // } else {
+      // try {
+      profileForm.currentState.save();
+      user.value.deviceToken = null;
+
+      user.value.password =
+          newPassword.value == confirmPassword.value ? newPassword.value : null;
+
+      user.value.avatar.id = avatar.value.id;
+      if (user.value.oldPassword != null) {
+        if (await _userRepository.checkOldPassword(oldPassword.value)) {
+          Get.log('Controller Checking Old Passord ');
+          // user.value.oldPassword = oldPassword.value;
+          // if (Get.find<SettingsService>().setting.value.enableOtp) {
+          //   await _userRepository.sendCodeToPhone();
+          //   Get.bottomSheet(
+          //     PhoneVerificationBottomSheetWidget(),
+          //     isScrollControlled: false,
+          //   );
+          // } else {
+          user.value = await _userRepository.update(user.value);
+          Get.find<AuthService>().user.value = user.value;
+          Get.showSnackbar(
+              Ui.SuccessSnackBar(message: "Profile saved successfully".tr));
+          // await Get.find<AuthService>().removeCurrentUser();
+          Get.offAllNamed(Routes.ROOT);
+        } else {
+          Get.showSnackbar(Ui.ErrorSnackBar(
+              message:
+                  "Old Password is Worng try Again with Correct Password".tr));
+        }
+      } else {
         user.value = await _userRepository.update(user.value);
         Get.find<AuthService>().user.value = user.value;
         Get.showSnackbar(
-            Ui.SuccessSnackBar(message: "Profile saved successfully".tr));
-        // }
-      } catch (e) {
-        Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
-      } finally {}
-    } else {
-      Get.showSnackbar(Ui.ErrorSnackBar(
-          message: "There are errors in some fields please correct them!".tr));
+            Ui.SuccessSnackBar(message: "Profile saved successfully else".tr));
+        // await Get.find<AuthService>().removeCurrentUser();
+        // Get.offAllNamed(Routes.LOGIN);
+      }
+      // }
+      // } catch (e) {
+      //   Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+      // } finally {}
     }
+    // else {
+    //   Get.showSnackbar(Ui.ErrorSnackBar(
+    //       message: "There are errors in some fields please correct them!".tr));
+    // }
   }
 
   Future<void> verifyPhone() async {

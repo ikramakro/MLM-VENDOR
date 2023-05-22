@@ -43,7 +43,6 @@ class BookingRepository {
   Future<Booking> descriptionDate(Booking booking, String bookingID) {
     return _laravelApiClient.updateExtraBooking(booking, bookingID);
   }
-
   // Future<PortfolioAlbum> portfolioAlbum(Booking booking, String bookingID) {
   //   return _laravelApiClient.portfolioAlbumCreate(booking, bookingID);
   // }

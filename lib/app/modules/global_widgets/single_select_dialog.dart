@@ -52,7 +52,9 @@ class _SingleSelectDialogState<V> extends State<SingleSelectDialog<V>> {
   }
 
   void _onCancelTap() {
-    Navigator.pop(context);
+    Navigator.pop(
+      context,
+    );
   }
 
   void _onSubmitTap() {

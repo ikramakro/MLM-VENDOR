@@ -27,6 +27,7 @@ class CertificatesViewController extends GetxController {
   void onInit() async {
     // loadEProviders();
     await loadEProviders();
+    await getExperiences();
     super.onInit();
   }
 
@@ -66,12 +67,10 @@ class CertificatesViewController extends GetxController {
     }
   }
 
-  Future delExperiences() async {
+  Future delExperiences(String certID, String eProviderId) async {
     try {
-      for (int i = 0; i < selectedList.length; i++) {
-        bool success = await _eProviderRepository.delCertificate(
-            selectedList[i].id, eProvider.value.id);
-      }
+      await _eProviderRepository.delCertificate(certID, eProviderId);
+
       await getExperiences();
       Get.showSnackbar(
           Ui.SuccessSnackBar(message: "Certificate Removed Successfully"));

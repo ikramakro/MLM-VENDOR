@@ -50,23 +50,23 @@ class RootController extends GetxController with WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) async {
     super.didChangeAppLifecycleState(state);
-    if (state == AppLifecycleState.inactive ||
-        state == AppLifecycleState.detached) {
-      await listenForMessages();
-      await statusOffEProvider();
-    } else if (state == AppLifecycleState.resumed) {
-      await statusEProvider();
-      for (int i = 0; i < messages.length; i++) {
-        _chatRepository.updateStatus(messages[i]);
-      }
-    }
+    // if (state == AppLifecycleState.inactive ||
+    //     state == AppLifecycleState.detached) {
+    //   await listenForMessages();
+    //   await statusOffEProvider();
+    // } else if (state == AppLifecycleState.resumed) {
+    //   await statusEProvider();
+    //   for (int i = 0; i < messages.length; i++) {
+    //     _chatRepository.updateStatus(messages[i]);
+    //   }
+    // }
   }
 
   Future getEProviders() async {
     try {
       eProviders.assignAll(await _eProviderRepository.getFull());
       print("this is the eprovider which is fetch to change status$eProviders");
-      if (eProviders.isNotEmpty) await statusEProvider();
+      // if (eProviders.isNotEmpty) await statusEProvider();
     } catch (e) {
       Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
     }
@@ -113,7 +113,7 @@ class RootController extends GetxController with WidgetsBindingObserver {
       userMessages.docs.forEach((element) {
         messages.add(Message.fromDocumentSnapshot(element));
         print("yoooo $messages");
-        _chatRepository.updateStatusOff(Message.fromDocumentSnapshot(element));
+        // _chatRepository.updateStatusOff(Message.fromDocumentSnapshot(element));
       });
     }
   }
@@ -127,6 +127,7 @@ class RootController extends GetxController with WidgetsBindingObserver {
     } else {
       changePageInRoot(0);
     }
+    Get.find<HomeController>().listenForMessages();
     super.onInit();
     WidgetsBinding.instance.addObserver(this);
   }

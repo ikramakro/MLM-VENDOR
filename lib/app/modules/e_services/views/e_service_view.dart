@@ -1,7 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:expandable_text/expandable_text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 
 import '../../../../common/ui.dart';
 import '../../../models/e_service_model.dart';
@@ -90,16 +92,60 @@ class EServiceView extends GetView<EServiceController> {
                       children: [
                         SizedBox(height: 10),
                         buildCategories(_eService),
+                        Container(
+                          padding: EdgeInsets.only(
+                              top: 20, bottom: 14, left: 20, right: 20),
+                          margin: EdgeInsets.only(
+                              left: 20, right: 20, top: 0, bottom: 0),
+                          decoration: BoxDecoration(
+                              color: Get.theme.primaryColor,
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10)),
+                              boxShadow: [
+                                BoxShadow(
+                                    color:
+                                        Get.theme.focusColor.withOpacity(0.1),
+                                    blurRadius: 10,
+                                    offset: Offset(0, 5)),
+                              ],
+                              border: Border.all(
+                                  color:
+                                      Get.theme.focusColor.withOpacity(0.05))),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  _eService.available
+                                      ? 'This service is available to customers'
+                                      : 'This service is not available to customers',
+                                  style: Get.textTheme.bodyText1,
+                                  textAlign: TextAlign.start,
+                                ),
+                              ),
+                              Switch(
+                                  value: controller.availability.value,
+                                  onChanged: (value) async {
+                                    controller.availability.value =
+                                        await !controller.availability.value;
+
+                                    controller.eServiceAvailablity();
+                                  }),
+                            ],
+                          ),
+                        ),
                         EServiceTilWidget(
                           title: Text("Description".tr,
                               style: Get.textTheme.subtitle2),
-                          content: Obx(() {
-                            if (controller.eService.value.description == '') {
-                              return SizedBox();
-                            }
-                            return Ui.applyHtml(_eService.description,
-                                style: Get.textTheme.bodyText1);
-                          }),
+                          content: controller.eService.value.description == ''
+                              ? SizedBox()
+                              : ExpandableText(
+                                  _eService.description ?? '',
+                                  expandText: 'Read more',
+                                  collapseText: 'Read less',
+                                  maxLines: 1,
+                                  linkColor: Colors.blue,
+                                ),
                         ),
                         // buildDuration(_eService),
                         // buildOptions(_eService),
@@ -414,7 +460,7 @@ class EServiceView extends GetView<EServiceController> {
                   padding: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                   margin: EdgeInsets.symmetric(vertical: 3),
                 ),
-              if (_eService.eProvider != null && _eService.eProvider.available)
+              if (_eService.eProvider != null && _eService.available)
                 Container(
                   child: Text("Available".tr,
                       maxLines: 1,
@@ -433,7 +479,7 @@ class EServiceView extends GetView<EServiceController> {
                   margin: EdgeInsets.symmetric(vertical: 3),
                 ),
               if (_eService.eProvider != null &&
-                  _eService.eProvider.available.toString() == "false")
+                  _eService.available.toString() == "false")
                 Container(
                   child: Text("Offline".tr,
                       maxLines: 1,

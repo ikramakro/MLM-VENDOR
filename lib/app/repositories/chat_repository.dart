@@ -37,7 +37,7 @@ class ChatRepository {
   Future<void> createMessage(Message message) {
     return FirebaseFirestore.instance
         .collection("messages")
-        .doc(message.id)
+        .doc(message?.id)
         .set(message.toJson())
         .catchError((e) {
       print(e);
@@ -98,7 +98,7 @@ class ChatRepository {
   Future<void> updateStatus(Message message) {
     return FirebaseFirestore.instance
         .collection("messages")
-        .doc(message.id)
+        .doc(message?.id)
         .update({'Status': true}).catchError((e) {
       print(e.toString());
     });
