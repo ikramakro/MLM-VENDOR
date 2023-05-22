@@ -3,7 +3,6 @@ import 'dart:io';
 
 import 'package:dio/dio.dart' as dio;
 import 'package:dio_http_cache/dio_http_cache.dart';
-import 'package:firebase_auth/firebase_auth.dart' as current;
 import 'package:flutter/foundation.dart' as foundation;
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
@@ -20,6 +19,7 @@ import '../models/award_model.dart';
 import '../models/booking_model.dart';
 import '../models/booking_status_model.dart';
 import '../models/category_model.dart';
+import '../models/certificate_edit.dart';
 import '../models/certificates_model.dart';
 import '../models/custom_page_model.dart';
 import '../models/e_provider_model.dart';
@@ -47,7 +47,6 @@ import '../models/wallet_transaction_model.dart';
 import '../routes/app_routes.dart';
 import 'api_provider.dart';
 import 'dio_client.dart';
-import 'firebase_provider.dart';
 
 class LaravelApiClient extends GetxService with ApiClient {
   DioClient _httpClient;
@@ -174,12 +173,6 @@ class LaravelApiClient extends GetxService with ApiClient {
     );
     if (response.data['success'] == true) {
       response.data['data']['auth'] = true;
-      await FirebaseProvider().saveUserData(
-        current.FirebaseAuth.instance.currentUser.uid.toString(),
-        response.data['data']['id'].toString(),
-      );
-      Get.log(current.FirebaseAuth.instance.currentUser.uid.toString());
-      Get.log('user id ${response.data['data']['id'].toString()}');
       return User.fromJson(response.data['data']);
     } else {
       throw new Exception(response.data['message']);
@@ -187,10 +180,7 @@ class LaravelApiClient extends GetxService with ApiClient {
   }
 
   Future<bool> sendResetLinkEmail(User user) async {
-    //When user not varify email and the email is expired and send again Add Like this
-    // Uri _uri = getApiBaseUri("provider/send_reset_link_email");
     Uri _uri = getApiBaseUri("provider/send_reset_link_email");
-    Get.log(_uri.toString());
 
     // to remove other attributes from the user object
     user = new User(email: user.email);
@@ -206,29 +196,12 @@ class LaravelApiClient extends GetxService with ApiClient {
     }
   }
 
-  Future<bool> checkOldPassword(String password) async {
-    Get.log('Checking Old Passord ');
-    dio.Dio _dio = dio.Dio();
-    // AuthService authService = AuthService();
-    String url =
-        "https://admin.mylocalmesh.co.uk/api/old_password_check?api_token=${authService.apiToken}";
-
-    var response = await _dio.post(url, data: {
-      "old_password": password,
-    });
-    bool result = response.data['data'] == "true" ? true : false;
-    print(result);
-    return result;
-  }
-
   Future<User> updateUser(User user) async {
     var _queryParameters = {
       'api_token': authService.apiToken,
     };
-
     Uri _uri = user.isProvider
         ? getApiBaseUri("provider/users/${user.id}")
-            .replace(queryParameters: _queryParameters)
         : getApiBaseUri("users/${user.id}")
             .replace(queryParameters: _queryParameters);
 
@@ -237,10 +210,6 @@ class LaravelApiClient extends GetxService with ApiClient {
       data: json.encode(user.toJson()),
       options: _optionsNetwork,
     );
-
-    Get.log('This is the user update Api EndPoint ${_uri.toString()}');
-    Get.log('This is the user  ${user.toString()}');
-
     if (response.data['success'] == true) {
       response.data['data']['auth'] = true;
       return User.fromJson(response.data['data']);
@@ -256,7 +225,6 @@ class LaravelApiClient extends GetxService with ApiClient {
     Uri _uri = getApiBaseUri("provider/dashboard")
         .replace(queryParameters: _queryParameters);
 
-    // Get.log(' this is the urrrrrrrrrrrrrrrrrlllllllllll${_uri.toString()}');
     var response = await _httpClient.getUri(_uri, options: _optionsCache);
     if (response.data['success'] == true) {
       return response.data['data']
@@ -430,7 +398,7 @@ class LaravelApiClient extends GetxService with ApiClient {
     };
     Uri _uri = getApiBaseUri("e_services/${eService.id}")
         .replace(queryParameters: _queryParameters);
-    Get.log('++++++++++++${_uri}');
+
     var response = await _httpClient.patchUri(
       _uri,
       data: json.encode(eService.toJson()),
@@ -556,7 +524,6 @@ class LaravelApiClient extends GetxService with ApiClient {
     };
     Uri _uri = getApiBaseUri("e_providers/${_eProvider.id}")
         .replace(queryParameters: _queryParameters);
-    Get.log('this is status available API EndPoit ${_uri}');
     var response = await _httpClient.putUri(_uri,
         data: _eProvider.toJson(), options: _optionsNetwork);
     if (response.data['success'] == true) {
@@ -588,7 +555,7 @@ class LaravelApiClient extends GetxService with ApiClient {
     try {
       var map = new Map<String, dynamic>();
       map['email'] = '$email';
-      Uri _uri = getApiBaseUri("providr/send_verification_link");
+      Uri _uri = getApiBaseUri("send_verification_link");
       var response =
           await _httpClient.postUri(_uri, data: map, options: _optionsNetwork);
       if (response.data['success'] == true) {
@@ -739,7 +706,7 @@ class LaravelApiClient extends GetxService with ApiClient {
     };
     if (page != null) {
       _queryParameters['only'] =
-          'id;name;description;eProviderType;eProviderType.name;media';
+          'id;name;description;eProviderType;eProviderType.name;accepted;media';
       _queryParameters['with'] = 'eProviderType;media';
 
       _queryParameters['limit'] = '4';
@@ -747,54 +714,11 @@ class LaravelApiClient extends GetxService with ApiClient {
     }
     Uri _uri = getApiBaseUri("provider/e_providers")
         .replace(queryParameters: _queryParameters);
-    Get.log('eprovider is $_uri');
 
     var response = await _httpClient.getUri(_uri, options: _optionsCache);
     if (response.data['success'] == true) {
       return response.data['data']
           .map<EProvider>((obj) => EProvider.fromJson(obj))
-          .toList();
-    } else {
-      throw new Exception(response.data['message']);
-    }
-  }
-
-  Future<bool> delEProviderCertificate(
-      String certID, String eProviderId) async {
-    var _queryParameters = {
-      'api_token': authService.apiToken,
-      'search': 'e_provider_id:$eProviderId',
-      'searchFields': 'e_provider_id:=',
-      'orderBy': 'updated_at',
-      'sortedBy': 'desc',
-    };
-    Uri _uri = getApiBaseUri("provider/experiences/$certID?")
-        .replace(queryParameters: _queryParameters);
-
-    var response = await _httpClient.deleteUri(_uri, options: _optionsNetwork);
-    print("check this del response $response");
-    if (response.data['success'] == true) {
-      return response.data['success'];
-    } else {
-      throw new Exception(response.data['message']);
-    }
-  }
-
-  Future<List<ExperienceView>> getEProviderCertificate(
-      String eProviderId) async {
-    var _queryParameters = {
-      'search': 'e_provider_id:$eProviderId',
-      'searchFields': 'e_provider_id:=',
-      'orderBy': 'updated_at',
-      'sortedBy': 'desc',
-    };
-    Uri _uri =
-        getApiBaseUri("experiences").replace(queryParameters: _queryParameters);
-
-    var response = await _httpClient.getUri(_uri, options: _optionsNetwork);
-    if (response.data['success'] == true) {
-      return response.data['data']
-          .map<ExperienceView>((obj) => ExperienceView.fromJson(obj))
           .toList();
     } else {
       throw new Exception(response.data['message']);
@@ -824,7 +748,8 @@ class LaravelApiClient extends GetxService with ApiClient {
   Future<List<EProvider>> getAcceptedEProviders(int page) async {
     print("calling load provider");
     var _queryParameters = {
-      'only': 'id;name;description;eProviderType;eProviderType.name;media',
+      'only':
+          'id;name;description;eProviderType;eProviderType.name;accepted;media',
       'with': 'eProviderType;media',
       'search': 'accepted:1',
       'searchFields': 'accepted:=',
@@ -852,7 +777,8 @@ class LaravelApiClient extends GetxService with ApiClient {
 
   Future<List<EProvider>> getFeaturedEProviders(int page) async {
     var _queryParameters = {
-      'only': 'id;name;description;eProviderType;eProviderType.name;media',
+      'only':
+          'id;name;description;eProviderType;eProviderType.name;accepted;media',
       'with': 'eProviderType;media',
       'search': 'featured:1',
       'searchFields': 'accepted:=',
@@ -880,7 +806,8 @@ class LaravelApiClient extends GetxService with ApiClient {
 
   Future<List<EProvider>> getPendingEProviders(int page) async {
     var _queryParameters = {
-      'only': 'id;name;description;eProviderType;eProviderType.name;media',
+      'only':
+          'id;name;description;eProviderType;eProviderType.name;accepted;media',
       'with': 'eProviderType;media',
       'search': 'accepted:0',
       'searchFields': 'accepted:=',
@@ -987,12 +914,9 @@ class LaravelApiClient extends GetxService with ApiClient {
     };
     Uri _uri = getApiBaseUri("del_image/$Id")
         .replace(queryParameters: _queryParameters);
-    Get.log(_uri.toString());
 
     var response = await _httpClient.getUri(_uri, options: _optionsCache);
     if (response.data['success'] == true) {
-      Get.showSnackbar(
-          Ui.SuccessSnackBar(message: "Image SuccessFully Removed"));
       return true;
     } else {
       throw new Exception(response.data['message']);
@@ -1114,7 +1038,7 @@ class LaravelApiClient extends GetxService with ApiClient {
       // If the server did return a 200 OK response,
       // then parse the JSON.
       print("gallery is fetched");
-      var json = jsonDecode(response.body)['data'] as List<dynamic>;
+      var json = jsonDecode(response.body)['data'] as List;
       List<SubAlbum> eProviderAlbumGallery =
           json.map((providerJson) => SubAlbum.fromJson(providerJson)).toList();
       // Gallery.value = eProviderAlbumGallery;
@@ -1184,6 +1108,48 @@ class LaravelApiClient extends GetxService with ApiClient {
       return response.data['data']
           .map<Experience>((obj) => Experience.fromJson(obj))
           .toList();
+    } else {
+      throw new Exception(response.data['message']);
+    }
+  }
+
+  Future<List<ExperienceView>> getEProviderCertificate(
+      String eProviderId) async {
+    var _queryParameters = {
+      'search': 'e_provider_id:$eProviderId',
+      'searchFields': 'e_provider_id:=',
+      'orderBy': 'updated_at',
+      'sortedBy': 'desc',
+    };
+    Uri _uri =
+        getApiBaseUri("experiences").replace(queryParameters: _queryParameters);
+
+    var response = await _httpClient.getUri(_uri, options: _optionsNetwork);
+    if (response.data['success'] == true) {
+      return response.data['data']
+          .map<ExperienceView>((obj) => ExperienceView.fromJson(obj))
+          .toList();
+    } else {
+      throw new Exception(response.data['message']);
+    }
+  }
+
+  Future<bool> delEProviderCertificate(
+      String certID, String eProviderId) async {
+    var _queryParameters = {
+      'api_token': authService.apiToken,
+      'search': 'e_provider_id:$eProviderId',
+      'searchFields': 'e_provider_id:=',
+      'orderBy': 'updated_at',
+      'sortedBy': 'desc',
+    };
+    Uri _uri = getApiBaseUri("provider/experiences/$certID?")
+        .replace(queryParameters: _queryParameters);
+
+    var response = await _httpClient.deleteUri(_uri, options: _optionsNetwork);
+    print("check this del response $response");
+    if (response.data['success'] == true) {
+      return response.data['success'];
     } else {
       throw new Exception(response.data['message']);
     }
@@ -1580,7 +1546,7 @@ class LaravelApiClient extends GetxService with ApiClient {
 
   Future<List<Booking>> getBookings(String statusId, int page) async {
     var _queryParameters = {
-      'with': 'bookingStatus;user;payment;payment.paymentStatus',
+      'with': 'bookingStatus;payment;payment.paymentStatus',
       'api_token': authService.apiToken,
       'search': 'booking_status_id:${statusId}',
       'orderBy': 'created_at',
@@ -1632,7 +1598,7 @@ class LaravelApiClient extends GetxService with ApiClient {
     };
     Uri _uri = getApiBaseUri("booking_statuses")
         .replace(queryParameters: _queryParameters);
-    Get.log('ths is BOOKING Status api endpoit $_uri');
+
     var response = await _httpClient.getUri(_uri, options: _optionsCache);
     if (response.data['success'] == true) {
       return response.data['data']
@@ -1700,7 +1666,6 @@ class LaravelApiClient extends GetxService with ApiClient {
     print("booking id is $id");
     Uri _uri = getApiBaseUri("bookings/$id?")
         .replace(queryParameters: _queryParameters);
-    Get.log('This is the Update in price Api End poit${_uri}');
     var response = await _httpClient.putUri(_uri,
         data: booking.toJson(), options: _optionsNetwork);
     if (response.data['success'] == true) {
@@ -1722,7 +1687,8 @@ class LaravelApiClient extends GetxService with ApiClient {
         data: portfolioData.toJson(), options: _optionsNetwork);
     if (response.data['success'] == true) {
       print("this is response of portfolio successfull");
-      Get.showSnackbar(Ui.SuccessSnackBar(message: "Uploaded Successfully"));
+      Get.showSnackbar(
+          Ui.SuccessSnackBar(message: "Uploaded Portfolio Successfully"));
     } else {
       throw new Exception(response.data['message']);
     }
@@ -1758,7 +1724,8 @@ class LaravelApiClient extends GetxService with ApiClient {
         data: portfolioData.toJson(), options: _optionsNetwork);
     if (response.data['success'] == true) {
       print("this is response of portfolio successfull");
-      Get.showSnackbar(Ui.SuccessSnackBar(message: "Uploaded Successfully"));
+      Get.showSnackbar(
+          Ui.SuccessSnackBar(message: "Uploaded Album Successfully"));
     } else {
       throw new Exception(response.data['message']);
     }
@@ -1777,6 +1744,24 @@ class LaravelApiClient extends GetxService with ApiClient {
     if (response.data['success'] == true) {
       print("this is response of portfolio successfull");
       Get.showSnackbar(Ui.SuccessSnackBar(message: "Uploaded Successfully"));
+    } else {
+      throw new Exception(response.data['message']);
+    }
+  }
+
+  Future certificateEdit(CertificateEdit certificate, String certId) async {
+    var _queryParameters = {
+      'api_token': authService.apiToken,
+    };
+
+    Uri _uri = getApiBaseUri("provider/experiences/$certId?")
+        .replace(queryParameters: _queryParameters);
+
+    var response = await _httpClient.putUri(_uri,
+        data: certificate.toJson(), options: _optionsNetwork);
+    if (response.data['success'] == true) {
+      Get.showSnackbar(
+          Ui.SuccessSnackBar(message: "Edit Certificate Successfully"));
     } else {
       throw new Exception(response.data['message']);
     }
@@ -2016,7 +2001,7 @@ class LaravelApiClient extends GetxService with ApiClient {
     };
     Uri _uri = getApiBaseUri("notifications")
         .replace(queryParameters: _queryParameters);
-    Get.log('Notification  ${_uri.toString()}');
+
     var response = await _httpClient.getUri(_uri, options: _optionsNetwork);
     if (response.data['success'] == true) {
       return response.data['data']

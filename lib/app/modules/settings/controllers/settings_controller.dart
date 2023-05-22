@@ -10,11 +10,7 @@ import '../views/theme_mode_view.dart';
 
 class SettingsController extends GetxController {
   var currentIndex = 0.obs;
-  final pages = <String>[
-    Routes.PROFILE,
-    Routes.SETTINGS_LANGUAGE,
-    Routes.SETTINGS_THEME_MODE
-  ];
+  final pages = <String>[Routes.PROFILE, Routes.SETTINGS_LANGUAGE, Routes.SETTINGS_THEME_MODE];
 
   void changePage(int index) {
     currentIndex.value = index;

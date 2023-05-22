@@ -122,7 +122,7 @@ class ForgotPasswordView extends GetView<AuthController> {
                         children: [
                           TextButton(
                             onPressed: () {
-                              Get.toNamed(Routes.REGISTER);
+                              Get.offAllNamed(Routes.REGISTER);
                             },
                             child: Text("You don't have an account?".tr),
                           ),

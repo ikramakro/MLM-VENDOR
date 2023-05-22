@@ -1,20 +1,17 @@
 import 'package:get/get.dart';
 
 import '../../../../common/ui.dart';
-import '../../../models/e_provider_model.dart';
 import '../../../models/e_service_model.dart';
 import '../../../models/option_group_model.dart';
 import '../../../models/review_model.dart';
 import '../../../repositories/e_service_repository.dart';
 
 class EServiceController extends GetxController {
-  final isExpanded = false.obs;
   final eService = EService().obs;
   final reviews = <Review>[].obs;
   final optionGroups = <OptionGroup>[].obs;
   final currentSlide = 0.obs;
   final heroTag = ''.obs;
-  final availability = true.obs;
   EServiceRepository _eServiceRepository;
 
   EServiceController() {
@@ -40,9 +37,7 @@ class EServiceController extends GetxController {
     await getReviews();
     await getOptionGroups();
     if (showMessage) {
-      Get.showSnackbar(Ui.SuccessSnackBar(
-          message:
-              eService.value.name + " " + "page refreshed successfully".tr));
+      Get.showSnackbar(Ui.SuccessSnackBar(message: eService.value.name + " " + "page refreshed successfully".tr));
     }
   }
 
@@ -56,18 +51,7 @@ class EServiceController extends GetxController {
 
   Future getReviews() async {
     try {
-      reviews
-          .assignAll(await _eServiceRepository.getReviews(eService.value.id));
-    } catch (e) {
-      Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
-    }
-  }
-
-  Future eServiceAvailablity() async {
-    try {
-      eService.value.available = await availability.value;
-      Get.log('====>> ${eService.value.eProvider.toString()}');
-      await _eServiceRepository.update(eService.value);
+      reviews.assignAll(await _eServiceRepository.getReviews(eService.value.id));
     } catch (e) {
       Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
     }
@@ -75,11 +59,9 @@ class EServiceController extends GetxController {
 
   Future getOptionGroups() async {
     try {
-      var _optionGroups =
-          await _eServiceRepository.getOptionGroups(eService.value.id);
+      var _optionGroups = await _eServiceRepository.getOptionGroups(eService.value.id);
       optionGroups.assignAll(_optionGroups.map((element) {
-        element.options
-            .removeWhere((option) => option.eServiceId != eService.value.id);
+        element.options.removeWhere((option) => option.eServiceId != eService.value.id);
         return element;
       }));
     } catch (e) {

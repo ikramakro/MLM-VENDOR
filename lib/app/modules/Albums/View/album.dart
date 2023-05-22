@@ -251,7 +251,7 @@ class Albums extends GetView<AlbumController> {
                                                 shape: StadiumBorder(),
                                                 color: Get.theme.focusColor
                                                     .withOpacity(0.1),
-                                                child: Text("Delete".tr,
+                                                child: Text("Reset".tr,
                                                     style: Get
                                                         .textTheme.bodyText1),
                                                 elevation: 0,

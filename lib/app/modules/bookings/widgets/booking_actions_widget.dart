@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../../common/ui.dart';
 import '../../../services/global_service.dart';
 import '../../global_widgets/block_button_widget.dart';
 import '../../global_widgets/confirm_dialog.dart';
-import '../../home/controllers/home_controller.dart';
 import '../controllers/booking_controller.dart';
 
 class BookingActionsWidget extends GetView<BookingController> {
@@ -51,24 +49,18 @@ class BookingActionsWidget extends GetView<BookingController> {
                             )),
                       ),
                       Icon(
-                          controller.booking.value.eService.getPrice
-                                  .toString()
-                                  .isEmpty
+                          controller.booking.value.extra == 0.0
                               ? Icons.clear_rounded
                               : Icons.check,
                           color: Get.theme.primaryColor,
                           size: 22)
                     ],
                   ),
-                  color: Get.theme.colorScheme.secondary,
-                  // controller.booking.value.extra != 0.0
-                  //     ? Get.theme.colorScheme.secondary
-                  //     : Get.theme.colorScheme.secondary.withOpacity(0.3),
-
+                  color: controller.booking.value.extra != 0.0
+                      ? Get.theme.colorScheme.secondary
+                      : Get.theme.colorScheme.secondary.withOpacity(0.3),
                   onPressed: () async {
-                    if (controller.booking.value.eService.getPrice != 0.0) {
-                      Get.log(controller.booking.value.eService.getPrice
-                          .toString());
+                    if (controller.booking.value.extra != 0.0) {
                       final confirm = await showDialog<bool>(
                         context: context,
                         builder: (BuildContext context) {
@@ -82,13 +74,8 @@ class BookingActionsWidget extends GetView<BookingController> {
                       );
                       if (confirm) {
                         // controller.acceptBookingService();
-                        controller.acceptBookingService().then((value) {
-                          Get.find<HomeController>().refreshHome();
-                        });
+                        controller.onTheWayBookingService();
                       }
-                    } else {
-                      Get.snackbar('The Price Is Not Set',
-                          'Please set a price after agreeing with customer before accepting the booking');
                     }
                   }),
             )),
@@ -128,7 +115,6 @@ class BookingActionsWidget extends GetView<BookingController> {
                       );
                       if (confirm) {
                         controller.onTheWayBookingService();
-                        Get.find<HomeController>().refreshHome();
                       }
                     })),
           if (_booking.value.status.order ==
@@ -158,8 +144,7 @@ class BookingActionsWidget extends GetView<BookingController> {
                       context: context,
                       builder: (BuildContext context) {
                         return ConfirmDialog(
-                          title:
-                              "This will initialte delivery of the service".tr,
+                          title: "Delivery".tr,
                           content: "Are you sure to deliver?".tr,
                           submitText: "Confirm".tr,
                           cancelText: "Cancel".tr,
@@ -167,8 +152,7 @@ class BookingActionsWidget extends GetView<BookingController> {
                       },
                     );
                     if (confirm) {
-                      controller.onTheWayBookingService();
-                      Get.find<HomeController>().refreshHome();
+                      controller.readyBookingService();
                     }
                   }),
             ),
@@ -208,7 +192,6 @@ class BookingActionsWidget extends GetView<BookingController> {
                     );
                     if (confirm) {
                       controller.doneBookingService();
-                      Get.find<HomeController>().refreshHome();
                     }
                   }),
             ),
@@ -301,7 +284,6 @@ class BookingActionsWidget extends GetView<BookingController> {
                 );
                 if (confirm) {
                   controller.declineBookingService();
-                  Get.find<HomeController>().refreshHome();
                 }
               },
               padding: EdgeInsets.symmetric(horizontal: 25, vertical: 12),

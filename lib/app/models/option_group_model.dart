@@ -36,10 +36,5 @@ class OptionGroup extends Model {
           options == other.options;
 
   @override
-  int get hashCode =>
-      super.hashCode ^
-      id.hashCode ^
-      name.hashCode ^
-      allowMultiple.hashCode ^
-      options.hashCode;
+  int get hashCode => super.hashCode ^ id.hashCode ^ name.hashCode ^ allowMultiple.hashCode ^ options.hashCode;
 }

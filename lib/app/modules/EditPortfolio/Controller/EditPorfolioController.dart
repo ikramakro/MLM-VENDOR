@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../../common/ui.dart';
-import '../../../models/Album1_Model.dart';
 import '../../../models/e_provider_model.dart';
 import '../../../models/media_model.dart';
 import '../../../models/user_model.dart';
@@ -13,9 +12,6 @@ import '../../../repositories/upload_repository.dart';
 import '../../../routes/app_routes.dart';
 
 class EditPortfolioController extends GetxController {
-  final media = <Media>[].obs;
-  final current = Media().obs;
-
   GlobalKey<FormState> portfolioEditForm;
   var user = new User().obs;
   final editable = false.obs;
@@ -34,7 +30,6 @@ class EditPortfolioController extends GetxController {
   final loop = 1.obs;
   final AlbumCoverUrl = "".obs;
   // GlobalKey<FormState> portfolioAlbumFormKey;
-  final album = <AlbumModel1>[].obs;
   final uuidPortfolio = [].obs;
   final portfolioImage = [].obs;
   final images = <File>[].obs;
@@ -66,9 +61,6 @@ class EditPortfolioController extends GetxController {
     galleries.value = arguments['gallery'] as Media;
     heroTag.value = arguments['hero'] as String;
     eProvider.value = arguments['eProvider'] as EProvider;
-    media.assignAll(arguments['media'] as List<Media>);
-    current.value = arguments['current'] as Media;
-
     print("this is calling every time");
     super.onInit();
   }
@@ -79,24 +71,6 @@ class EditPortfolioController extends GetxController {
       c.dispose();
     }
     super.dispose();
-  }
-
-  Future getGalleries() async {
-    print("this is gallery api running");
-    try {
-      album.value = [];
-      final _Album = await _eProviderRepository.getAlbum(eProvider.value.id);
-      if (_Album.isNotEmpty) {
-        for (int i = 0; i < _Album.length; i++) {
-          if (_Album[i].images.isNotEmpty) {
-            album.add(_Album[i]);
-            print(_Album[i]);
-          }
-        }
-      }
-    } catch (e) {
-      Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
-    }
   }
 
   Future<void> deletePortfolio(String Id) async {
@@ -117,7 +91,6 @@ class EditPortfolioController extends GetxController {
       if (description.value != galleries.value.name) {
         await _eProviderRepository.updatePortfolioImageDes(
             galleries.value.id, description.value, eProvider.value.id);
-
         Get.offNamed(Routes.PortfolioAlbumView, preventDuplicates: false);
       } else {
         Get.offNamed(Routes.PortfolioAlbumView, preventDuplicates: false);

@@ -9,14 +9,7 @@ class SelectDialogItem<V> {
 }
 
 class SelectDialog<V> extends StatefulWidget {
-  SelectDialog(
-      {Key key,
-      this.items,
-      this.initialSelectedValue,
-      this.title,
-      this.submitText,
-      this.cancelText})
-      : super(key: key);
+  SelectDialog({Key key, this.items, this.initialSelectedValue, this.title, this.submitText, this.cancelText}) : super(key: key);
 
   final List<SelectDialogItem<V>> items;
   final V initialSelectedValue;

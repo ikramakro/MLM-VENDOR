@@ -1,12 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart' as fba;
 import 'package:get/get.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../services/auth_service.dart';
+import '../services/firebase_messaging_service.dart';
 
 class FirebaseProvider extends GetxService {
   fba.FirebaseAuth _auth = fba.FirebaseAuth.instance;
-  FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   Future<FirebaseProvider> init() async {
     return this;
@@ -17,6 +16,7 @@ class FirebaseProvider extends GetxService {
       fba.UserCredential result = await _auth.signInWithEmailAndPassword(
           email: email, password: password);
       if (result.user != null) {
+        await Get.putAsync(() => FireBaseMessagingService().init());
         return true;
       } else {
         return false;
@@ -35,18 +35,6 @@ class FirebaseProvider extends GetxService {
     } else {
       return false;
     }
-  }
-
-  Future saveUserData(String uid, String id) async {
-    Get.log('Firebase is running ');
-    await _firestore.collection('Vendors').doc(uid).set({
-      'uid': uid,
-      'id': id,
-      'status': false,
-    }).catchError((e) {
-      print('error');
-      print(e.toString());
-    });
   }
 
   Future<void> verifyPhone(String smsCode) async {

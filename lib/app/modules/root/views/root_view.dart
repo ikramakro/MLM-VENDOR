@@ -31,7 +31,6 @@ class RootView extends GetView<RootController> {
             CustomBottomNavigationItem(
               icon: Icons.chat,
               label: "Chats".tr,
-              ischat: false,
             ),
             CustomBottomNavigationItem(
               icon: Icons.person,

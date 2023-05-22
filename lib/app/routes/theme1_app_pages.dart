@@ -2,31 +2,28 @@ import 'package:get/get.dart';
 
 import '../middlewares/auth_middleware.dart';
 import '../middlewares/provider_middleware.dart';
-import '../models/certificates_model.dart';
 import '../modules/AlbumCreate/View/AlbumCreate.dart';
 import '../modules/AlbumEdit/binding/EditAlbumBinding.dart';
 import '../modules/AlbumEdit/view/EditAlbum.dart';
 import '../modules/Albums/View/album.dart';
 import '../modules/Albums/bindings/AlbumBinding.dart';
+import '../modules/CertificateEdit/Binding/CertificateEditBinding.dart';
+import '../modules/CertificateEdit/View/Certificate_Edit.dart';
 import '../modules/Certificate_View/Binding/CertificateBinding.dart';
 import '../modules/Certificate_View/View/CertificateView.dart';
-import '../modules/Certificates/View/Certificates.dart';
-import '../modules/Certificates/bindings/certificatesBinding.dart';
+import '../modules/CertificatesCreate/View/Certificates.dart';
+import '../modules/CertificatesCreate/bindings/certificatesBinding.dart';
 import '../modules/EditPortfolio/Binding/editportfolioBinding.dart';
 import '../modules/EditPortfolio/View/EditPortfolio.dart';
-import '../modules/EditPortfolio/View/EditPortfolioview.dart';
 import '../modules/EditSubAlbum/Binding/editSubAlbumBinding.dart';
 import '../modules/EditSubAlbum/View/EditSubAlbum.dart';
-import '../modules/EditSubAlbum/View/EditSubAlbumView.dart';
 import '../modules/Portfolio/View/portfolio.dart';
 import '../modules/Portfolio/bindings/portfolioBinding.dart';
 import '../modules/auth/bindings/auth_binding.dart';
-import '../modules/auth/views/email_verification_view.dart';
 import '../modules/auth/views/forgot_password_view.dart';
 import '../modules/auth/views/login_view.dart';
 import '../modules/auth/views/phone_verification_view.dart';
 import '../modules/auth/views/register_view.dart';
-import '../modules/auth/views/terms_&_condition.dart';
 import '../modules/bookings/views/Reference_Image.dart';
 import '../modules/bookings/views/booking_view.dart';
 import '../modules/checkout/bindings/checkout_binding.dart';
@@ -46,14 +43,12 @@ import '../modules/custom_pages/views/custom_pages_view.dart';
 import '../modules/e_providers/bindings/e_provider_binding.dart';
 import '../modules/e_providers/bindings/e_providers_binding.dart';
 import '../modules/e_providers/views/address_picker_view.dart';
-import '../modules/e_providers/views/album_view_all.dart';
 import '../modules/e_providers/views/e_provider_addresses_form_view.dart';
 import '../modules/e_providers/views/e_provider_availability_form_view.dart';
 import '../modules/e_providers/views/e_provider_e_services_view.dart';
 import '../modules/e_providers/views/e_provider_form_view.dart';
 import '../modules/e_providers/views/e_provider_view.dart';
 import '../modules/e_providers/views/e_providers_view.dart';
-import '../modules/e_providers/views/portfolio_view_all.dart';
 import '../modules/e_services/bindings/e_services_binding.dart';
 import '../modules/e_services/views/e_service_form_view.dart';
 import '../modules/e_services/views/e_service_view.dart';
@@ -109,10 +104,6 @@ class Theme1AppPages {
         page: () => ChatsView(),
         binding: RootBinding(),
         middlewares: [AuthMiddleware(), ProviderMiddleware()]),
-    //  GetPage(
-    // name: Routes.CERTIFICATEEDIT,
-    // page: () => CertificateEdit(),
-    // binding: CertificateEditBinding()),
     GetPage(
         name: Routes.SETTINGS,
         page: () => SettingsView(),
@@ -129,11 +120,11 @@ class Theme1AppPages {
         name: Routes.Portfolio,
         page: () => Portfolio(),
         binding: PortfolioBinding()),
-    GetPage(name: Routes.Albums, page: () => Albums(), binding: AlbumBinding()),
     GetPage(
         name: Routes.CertificatesView,
         page: () => CertificateView(),
         binding: CertificateViewBinding()),
+    GetPage(name: Routes.Albums, page: () => Albums(), binding: AlbumBinding()),
     GetPage(
         name: Routes.Certificates,
         page: () => Certificates(),
@@ -150,24 +141,12 @@ class Theme1AppPages {
         page: () => RegisterView(),
         binding: AuthBinding()),
     GetPage(
-        name: Routes.TermsAndCondition,
-        page: () => TermsAndConditionsScreen(),
-        binding: AuthBinding()),
-    GetPage(
         name: Routes.FORGOT_PASSWORD,
         page: () => ForgotPasswordView(),
         binding: AuthBinding()),
     GetPage(
-        name: Routes.Portfolio_View_All_ForBusniss,
-        page: () => PortfolioViewAllForBusniss(),
-        binding: EProviderBinding()),
-    GetPage(
-        name: Routes.Album_View_All_ForBusniss,
-        page: () => AlbumViewAllForBusniss(),
-        binding: EProviderBinding()),
-    GetPage(
-        name: Routes.EMAIL_VERIFICATION,
-        page: () => EmailVerification(),
+        name: Routes.PHONE_VERIFICATION,
+        page: () => PhoneVerificationView(),
         binding: AuthBinding()),
     GetPage(
         name: Routes.E_SERVICE,
@@ -186,11 +165,6 @@ class Theme1AppPages {
       binding: EditPortfolioBinding(),
     ),
     GetPage(
-      name: Routes.Edit_Portfolio_View,
-      page: () => EditPortfolioView(),
-      binding: EditPortfolioBinding(),
-    ),
-    GetPage(
       name: Routes.View_SubAlbum,
       page: () => ViewSubAlbums(),
       binding: ViewSubAlbumBinding(),
@@ -200,16 +174,7 @@ class Theme1AppPages {
       page: () => EditSubAlbum(),
       binding: EditSubAlbumBinding(),
     ),
-    GetPage(
-      name: Routes.Edit_SubAlbum_View,
-      page: () => EditSubAlbumView(),
-      binding: EditSubAlbumBinding(),
-    ),
-    GetPage(
-      name: Routes.AlbumCreate,
-      page: () => AlbumCreate(),
-      binding: PortfolioAndAlbumBinding(),
-    ),
+
     GetPage(
       name: Routes.PortfolioAlbumView,
       page: () => PortfolioAndAlbumView(),
@@ -223,6 +188,11 @@ class Theme1AppPages {
     GetPage(
       name: Routes.PortfolioAlbum,
       page: () => PortfolioAndAlbum(),
+      binding: PortfolioAndAlbumBinding(),
+    ),
+    GetPage(
+      name: Routes.AlbumCreate,
+      page: () => AlbumCreate(),
       binding: PortfolioAndAlbumBinding(),
     ),
     GetPage(
@@ -365,6 +335,10 @@ class Theme1AppPages {
         name: Routes.FLUTTERWAVE,
         page: () => FlutterWaveViewWidget(),
         binding: CheckoutBinding()),
+    GetPage(
+        name: Routes.CERTIFICATEEDIT,
+        page: () => CertificateEdit(),
+        binding: CertificateEditBinding()),
     GetPage(
         name: Routes.CASH,
         page: () => CashViewWidget(),

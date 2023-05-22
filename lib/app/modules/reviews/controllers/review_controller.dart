@@ -27,8 +27,7 @@ class ReviewController extends GetxController {
   Future refreshReview({bool showMessage = false}) async {
     await getReview();
     if (showMessage) {
-      Get.showSnackbar(
-          Ui.SuccessSnackBar(message: "Reviews refreshed successfully".tr));
+      Get.showSnackbar(Ui.SuccessSnackBar(message: "Reviews refreshed successfully".tr));
     }
   }
 

@@ -1,19 +1,15 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:expandable_text/expandable_text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:home_services_provider/app/modules/e_providers/views/album_view.dart';
-import 'package:home_services_provider/app/modules/e_providers/views/portfolio_view.dart';
 import 'package:shimmer/shimmer.dart';
+
 import '../../../../common/map.dart';
 import '../../../../common/ui.dart';
 import '../../../models/e_provider_model.dart';
 import '../../../models/media_model.dart';
 import '../../../providers/laravel_provider.dart';
 import '../../../routes/app_routes.dart';
-import '../../Portfolio_view/View/Portfolio_View.dart';
-import '../../album_view/View/Album_view.dart';
 import '../../global_widgets/circular_loading_widget.dart';
 import '../controllers/e_provider_controller.dart';
 import '../widgets/availability_hour_item_widget.dart';
@@ -85,16 +81,15 @@ class EProviderView extends GetView<EProviderController> {
                       children: [
                         SizedBox(height: 10),
                         EProviderTilWidget(
-                          title:
-                              Text("About".tr, style: Get.textTheme.subtitle2),
-                          content: ExpandableText(
-                            _eProvider.description ?? '',
-                            expandText: 'Read more',
-                            collapseText: 'Read less',
-                            maxLines: 1,
-                            linkColor: Colors.blue,
-                          ),
+                          title: Text("Profile Overview".tr,
+                              style: Get.textTheme.subtitle2),
+                          content: Ui.applyHtml(_eProvider.description ?? '',
+                              style: Get.textTheme.bodyText1),
                         ),
+                        buildAddresses(context),
+                        // buildAvailabilityHours(_eProvider),
+                        buildAwards(),
+                        // buildExperiences(),
                         EProviderTilWidget(
                           horizontalPadding: 0,
                           title: Text("Services offered".tr,
@@ -113,100 +108,6 @@ class EProviderView extends GetView<EProviderController> {
                           ],
                         ),
                         buildGalleries(),
-                        Container(
-                            margin: EdgeInsets.symmetric(
-                                horizontal: 10, vertical: 10),
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 0, vertical: 15),
-                            decoration: Ui.getBoxDecoration(),
-                            // width: 200,
-                            height: 400,
-                            child: DefaultTabController(
-                                length: 2,
-                                child: Scaffold(
-                                    appBar: new PreferredSize(
-                                      preferredSize: Size.fromHeight(30),
-                                      child: new Container(
-                                        // color: Colors.green,
-                                        width: 20,
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                            color: Get.theme.primaryColor,
-                                          ),
-                                          child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: <Widget>[
-                                              new TabBar(
-                                                indicatorColor:
-                                                    Color(0xffE5E7EB),
-                                                indicator: UnderlineTabIndicator(
-                                                    borderSide:
-                                                        BorderSide(width: 0.5),
-                                                    insets: EdgeInsets.symmetric(
-                                                        vertical: MediaQuery.of(
-                                                                    context)
-                                                                .size
-                                                                .height /
-                                                            100 *
-                                                            -1.4,
-                                                        horizontal:
-                                                            MediaQuery.of(
-                                                                        context)
-                                                                    .size
-                                                                    .width /
-                                                                100 *
-                                                                10)),
-                                                tabs: [
-                                                  Text(
-                                                    "Portfolio",
-                                                    style: TextStyle(
-                                                        fontSize: MediaQuery.of(
-                                                                    context)
-                                                                .size
-                                                                .width /
-                                                            100 *
-                                                            3.7,
-                                                        color: Get
-                                                            .theme
-                                                            .colorScheme
-                                                            .secondary),
-                                                  ),
-                                                  Text(
-                                                    "Albums",
-                                                    style: TextStyle(
-                                                        fontSize: MediaQuery.of(
-                                                                    context)
-                                                                .size
-                                                                .width /
-                                                            100 *
-                                                            3.7,
-                                                        color: Get
-                                                            .theme
-                                                            .colorScheme
-                                                            .secondary),
-                                                  ),
-                                                  // SizedBox(),
-                                                  // SizedBox(),
-                                                ],
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    body: TabBarView(children: <Widget>[
-                                      PortfolioViewForBusniss(),
-                                      AlbumViewForBusniss(),
-                                    ])))),
-
-                        buildAwards(),
-                        buildAddresses(context),
-                        // buildAvailabilityHours(_eProvider),
-                        // buildAwards(),
-                        // // buildExperiences(),
-
-                        // buildGalleries(),
                       ],
                     ),
                   ),
@@ -224,7 +125,7 @@ class EProviderView extends GetView<EProviderController> {
       }
       return EProviderTilWidget(
         horizontalPadding: 0,
-        title: Text("Images".tr, style: Get.textTheme.subtitle2)
+        title: Text("Galleries".tr, style: Get.textTheme.subtitle2)
             .paddingSymmetric(horizontal: 20),
         content: Container(
           height: 120,

@@ -93,6 +93,7 @@ class EServiceFormController extends GetxController {
 
       // print("checkkkk this ${Subcategories.toString()}");
       // print("checkkkk this ${eServices.toString()}");
+
     } catch (e) {
       Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
     }

@@ -40,9 +40,7 @@ class PaymentDetailsWidget extends StatelessWidget {
             valueStyle: Get.textTheme.bodyText2,
             child: Align(
               alignment: Alignment.centerRight,
-              child: Ui.getPrice(
-                  _eProviderSubscription.subscriptionPackage.getPrice,
-                  style: Get.textTheme.subtitle2),
+              child: Ui.getPrice(_eProviderSubscription.subscriptionPackage.getPrice, style: Get.textTheme.subtitle2),
             ),
           ),
         ],

@@ -49,9 +49,7 @@ class EProviderController extends GetxController {
     await getGalleries();
     await getReviews();
     if (showMessage) {
-      Get.showSnackbar(Ui.SuccessSnackBar(
-          message:
-              eProvider.value.name + " " + "page refreshed successfully".tr));
+      Get.showSnackbar(Ui.SuccessSnackBar(message: eProvider.value.name + " " + "page refreshed successfully".tr));
     }
   }
 
@@ -65,8 +63,7 @@ class EProviderController extends GetxController {
 
   Future getFeaturedEServices() async {
     try {
-      featuredEServices.assignAll(await _eProviderRepository
-          .getFeaturedEServices(eProviderId: eProvider.value.id, page: 1));
+      featuredEServices.assignAll(await _eProviderRepository.getFeaturedEServices(eProviderId: eProvider.value.id, page: 1));
     } catch (e) {
       Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
     }
@@ -74,8 +71,7 @@ class EProviderController extends GetxController {
 
   Future getReviews() async {
     try {
-      reviews
-          .assignAll(await _eProviderRepository.getReviews(eProvider.value.id));
+      reviews.assignAll(await _eProviderRepository.getReviews(eProvider.value.id));
     } catch (e) {
       Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
     }
@@ -83,8 +79,7 @@ class EProviderController extends GetxController {
 
   Future getAwards() async {
     try {
-      awards
-          .assignAll(await _eProviderRepository.getAwards(eProvider.value.id));
+      awards.assignAll(await _eProviderRepository.getAwards(eProvider.value.id));
     } catch (e) {
       Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
     }
@@ -92,8 +87,7 @@ class EProviderController extends GetxController {
 
   Future getExperiences() async {
     try {
-      experiences.assignAll(
-          await _eProviderRepository.getExperiences(eProvider.value.id));
+      experiences.assignAll(await _eProviderRepository.getExperiences(eProvider.value.id));
     } catch (e) {
       Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
     }
@@ -101,8 +95,7 @@ class EProviderController extends GetxController {
 
   Future getGalleries() async {
     try {
-      final _galleries =
-          await _eProviderRepository.getGalleries(eProvider.value.id);
+      final _galleries = await _eProviderRepository.getGalleries(eProvider.value.id);
       galleries.assignAll(_galleries.map((e) {
         e.image.name = e.description;
         return e.image;

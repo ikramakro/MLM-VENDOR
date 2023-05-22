@@ -6,56 +6,52 @@ import '../../global_widgets/circular_loading_widget.dart';
 import '../../global_widgets/notifications_button_widget.dart';
 import '../controllers/messages_controller.dart';
 import '../widgets/message_item_widget.dart';
-import '../../../../common/helper.dart';
 
 class MessagesView extends GetView<MessagesController> {
   Widget conversationsList() {
-    return WillPopScope(
-      onWillPop: Helper().onWillPop,
-      child: Obx(
-        () {
-          if (controller.messages.isNotEmpty) {
-            var _messages = controller.messages;
-            return ListView.separated(
-                physics: AlwaysScrollableScrollPhysics(),
-                controller: controller.scrollController,
-                itemCount: _messages.length,
-                separatorBuilder: (context, index) {
-                  return SizedBox(height: 7);
-                },
-                shrinkWrap: true,
-                primary: false,
-                itemBuilder: (context, index) {
-                  if (index == controller.messages.length) {
-                    return Obx(() {
-                      return Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: new Center(
-                          child: new Opacity(
-                            opacity: controller.isLoading.value ? 1 : 0,
-                            child: new CircularProgressIndicator(),
-                          ),
+    return Obx(
+      () {
+        if (controller.messages.isNotEmpty) {
+          var _messages = controller.messages;
+          return ListView.separated(
+              physics: AlwaysScrollableScrollPhysics(),
+              controller: controller.scrollController,
+              itemCount: _messages.length,
+              separatorBuilder: (context, index) {
+                return SizedBox(height: 7);
+              },
+              shrinkWrap: true,
+              primary: false,
+              itemBuilder: (context, index) {
+                if (index == controller.messages.length) {
+                  return Obx(() {
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: new Center(
+                        child: new Opacity(
+                          opacity: controller.isLoading.value ? 1 : 0,
+                          child: new CircularProgressIndicator(),
                         ),
-                      );
-                    });
-                  } else {
-                    return MessageItemWidget(
-                      message: controller.messages.elementAt(index),
-                      onDismissed: (conversation) async {
-                        await controller.deleteMessage(
-                            controller.messages.elementAt(index));
-                      },
+                      ),
                     );
-                  }
-                });
-          } else {
-            return CircularLoadingWidget(
-              height: Get.height,
-              onCompleteText: "Messages List Empty".tr,
-            );
-          }
-        },
-      ),
+                  });
+                } else {
+                  return MessageItemWidget(
+                    message: controller.messages.elementAt(index),
+                    onDismissed: (conversation) async {
+                      await controller
+                          .deleteMessage(controller.messages.elementAt(index));
+                    },
+                  );
+                }
+              });
+        } else {
+          return CircularLoadingWidget(
+            height: Get.height,
+            onCompleteText: "Messages List Empty".tr,
+          );
+        }
+      },
     );
   }
 

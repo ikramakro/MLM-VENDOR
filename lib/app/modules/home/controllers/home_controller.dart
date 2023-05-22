@@ -75,56 +75,56 @@ class HomeController extends GetxController with WidgetsBindingObserver {
     }
   }
 
-  // Future updateStatusOffline(String id) async {
-  //   print('user is going offline');
-  //   FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  //   _firestore
-  //       .collection('Users')
-  //       .where('id', isEqualTo: id)
-  //       .get()
-  //       .then((value) {
-  //     _firestore.collection('Users').doc(value.docs[0].id).update({
-  //       'status': false,
-  //     }).catchError((e) {
-  //       print('error');
-  //       print(e.toString());
-  //     });
-  //   });
-  // }
+  Future updateStatusOffline(String id) async {
+    print('user is going offline');
+    FirebaseFirestore _firestore = FirebaseFirestore.instance;
+    _firestore
+        .collection('Users')
+        .where('id', isEqualTo: id)
+        .get()
+        .then((value) {
+      _firestore.collection('Users').doc(value.docs[0].id).update({
+        'status': false,
+      }).catchError((e) {
+        print('error');
+        print(e.toString());
+      });
+    });
+  }
 
-  // Future updateStatusOnline(String id) async {
-  //   print('user is going offline');
-  //   FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  //   _firestore
-  //       .collection('Users')
-  //       .where('id', isEqualTo: id)
-  //       .get()
-  //       .then((value) {
-  //     _firestore.collection('Users').doc(value.docs[0].id).update({
-  //       'status': true,
-  //     }).catchError((e) {
-  //       print('error');
-  //       print(e.toString());
-  //     });
-  //   });
-  // }
+  Future updateStatusOnline(String id) async {
+    print('user is going offline');
+    FirebaseFirestore _firestore = FirebaseFirestore.instance;
+    _firestore
+        .collection('Users')
+        .where('id', isEqualTo: id)
+        .get()
+        .then((value) {
+      _firestore.collection('Users').doc(value.docs[0].id).update({
+        'status': true,
+      }).catchError((e) {
+        print('error');
+        print(e.toString());
+      });
+    });
+  }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     print("State change");
     print(state.toString());
-    // if (state == AppLifecycleState.inactive) {
-    //   updateStatusOffline(currentUser.value.id);
-    // }
-    // if (state == AppLifecycleState.paused) {
-    //   updateStatusOffline(currentUser.value.id);
-    // }
-    // if (state == AppLifecycleState.detached) {
-    //   updateStatusOffline(currentUser.value.id);
-    // }
-    // if (state == AppLifecycleState.resumed) {
-    //   updateStatusOnline(currentUser.value.id);
-    // }
+    if (state == AppLifecycleState.inactive) {
+      updateStatusOffline(currentUser.value.id);
+    }
+    if (state == AppLifecycleState.paused) {
+      updateStatusOffline(currentUser.value.id);
+    }
+    if (state == AppLifecycleState.detached) {
+      updateStatusOffline(currentUser.value.id);
+    }
+    if (state == AppLifecycleState.resumed) {
+      updateStatusOnline(currentUser.value.id);
+    }
   }
 
   Future listenForMessages() async {
@@ -145,7 +145,6 @@ class HomeController extends GetxController with WidgetsBindingObserver {
     bookings.value = [];
     print("this is refresh page");
     await getBookingStatuses();
-
     await getStatistics();
     await TotalRequestsCompleted();
 

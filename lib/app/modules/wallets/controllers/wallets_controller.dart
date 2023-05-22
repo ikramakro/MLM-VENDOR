@@ -26,8 +26,7 @@ class WalletsController extends GetxController {
     initSelectedWallet();
     await getWalletTransactions();
     if (showMessage == true) {
-      Get.showSnackbar(Ui.SuccessSnackBar(
-          message: "List of wallets refreshed successfully".tr));
+      Get.showSnackbar(Ui.SuccessSnackBar(message: "List of wallets refreshed successfully".tr));
     }
   }
 
@@ -41,8 +40,7 @@ class WalletsController extends GetxController {
 
   Future getWalletTransactions() async {
     try {
-      walletTransactions.assignAll(
-          await _paymentRepository.getWalletTransactions(selectedWallet.value));
+      walletTransactions.assignAll(await _paymentRepository.getWalletTransactions(selectedWallet.value));
     } catch (e) {
       Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
     }

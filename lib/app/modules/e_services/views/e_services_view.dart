@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 
 import '../../../providers/laravel_provider.dart';
 import '../../../routes/app_routes.dart';
-import '../../global_widgets/home_search_bar_widget.dart';
 import '../controllers/e_services_controller.dart';
 import '../widgets/services_list_widget.dart';
 
@@ -56,7 +55,7 @@ class EServicesView extends GetView<EServicesController> {
                     color: Get.theme.primaryColor),
                 onPressed: () => {Get.back()},
               ),
-              bottom: HomeSearchBarWidget(),
+              // bottom: HomeSearchBarWidget(),
               flexibleSpace: FlexibleSpaceBar(
                   collapseMode: CollapseMode.parallax,
                   background: Container(

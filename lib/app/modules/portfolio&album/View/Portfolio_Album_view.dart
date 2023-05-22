@@ -112,10 +112,10 @@ class PortfolioAndAlbumView extends GetView<AlbumViewController> {
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: <Widget>[
-                              TabBar(
+                              new TabBar(
                                 indicatorColor: Color(0xffE5E7EB),
                                 indicator: UnderlineTabIndicator(
-                                    borderSide: BorderSide(width: 0.8),
+                                    borderSide: BorderSide(width: 0.5),
                                     insets: EdgeInsets.symmetric(
                                         vertical:
                                             MediaQuery.of(context).size.height /
@@ -127,12 +127,12 @@ class PortfolioAndAlbumView extends GetView<AlbumViewController> {
                                                 10)),
                                 tabs: [
                                   Text(
-                                    "Portfolios",
+                                    "Portfolio",
                                     style: TextStyle(
                                         fontSize:
                                             MediaQuery.of(context).size.width /
                                                 100 *
-                                                4.0,
+                                                3.0,
                                         color: Get.theme.colorScheme.secondary),
                                   ),
                                   Text(
@@ -141,7 +141,7 @@ class PortfolioAndAlbumView extends GetView<AlbumViewController> {
                                         fontSize:
                                             MediaQuery.of(context).size.width /
                                                 100 *
-                                                4.0,
+                                                3.0,
                                         color: Get.theme.colorScheme.secondary),
                                   ),
                                   // SizedBox(),
@@ -153,22 +153,12 @@ class PortfolioAndAlbumView extends GetView<AlbumViewController> {
                         ),
                       ),
                     ),
-                    body: Padding(
-                      padding: const EdgeInsets.all(20),
-                      child: Column(
-                        children: [
-                          Text('Tap and hold Image to Select'),
-                          Expanded(
-                            child: TabBarView(
-                              // physics: NeverScrollableScrollPhysics(),
-                              children: <Widget>[
-                                PortfolioView(),
-                                AlbumView(),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
+                    body: TabBarView(
+                      // physics: NeverScrollableScrollPhysics(),
+                      children: <Widget>[
+                        PortfolioView(),
+                        AlbumView(),
+                      ],
                     )),
               ))),
     );
