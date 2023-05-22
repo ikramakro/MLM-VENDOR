@@ -32,10 +32,11 @@ class StatisticsCarouselWidget extends StatelessWidget {
                 "total_e_providers") {
               return Container(
                 margin: EdgeInsetsDirectional.only(
-                    start: 0, end: 20, top: 25, bottom: 25),
-                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 30),
+                    start: 0, end: 10, top: 75, bottom: 75),
+                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
                 decoration: Ui.getBoxDecoration(color: Get.theme.primaryColor),
-                width: 110,
+                height: 100,
+                width: 90,
                 child: Column(
                   children: [
                     Text(
@@ -46,7 +47,7 @@ class StatisticsCarouselWidget extends StatelessWidget {
                     ),
                     SizedBox(height: 8),
                     Text(
-                      "Total requests completed ".tr,
+                      "Bookings Completed".tr,
                       textAlign: TextAlign.center,
                       maxLines: 3,
                       style: Get.textTheme.caption,

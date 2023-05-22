@@ -42,6 +42,8 @@ class RootBinding extends Bindings {
     Get.lazyPut<SearchController>(
       () => SearchController(),
     );
-    Get.lazyPut<EProvidersController>(() => EProvidersController());
+    Get.lazyPut<EProvidersController>(
+      () => EProvidersController(),
+    );
   }
 }

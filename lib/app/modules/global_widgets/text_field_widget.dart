@@ -4,27 +4,28 @@ import 'package:get/get.dart';
 import '../../../common/ui.dart';
 
 class TextFieldWidget extends StatelessWidget {
-  const TextFieldWidget({
-    Key key,
-    this.onSaved,
-    this.readOnly,
-    this.onChanged,
-    this.validator,
-    this.keyboardType,
-    this.initialValue,
-    this.hintText,
-    this.captionText,
-    this.errorText,
-    this.iconData,
-    this.labelText,
-    this.obscureText,
-    this.suffixIcon,
-    this.isFirst,
-    this.isLast,
-    this.style,
-    this.textAlign,
-    this.suffix,
-  }) : super(key: key);
+  const TextFieldWidget(
+      {Key key,
+      this.onSaved,
+      this.readOnly,
+      this.onChanged,
+      this.validator,
+      this.keyboardType,
+      this.initialValue,
+      this.hintText,
+      this.captionText,
+      this.errorText,
+      this.iconData,
+      this.labelText,
+      this.obscureText,
+      this.suffixIcon,
+      this.isFirst,
+      this.isLast,
+      this.style,
+      this.textAlign,
+      this.suffix,
+      this.valdte})
+      : super(key: key);
 
   final FormFieldSetter<String> onSaved;
   final ValueChanged<String> onChanged;
@@ -44,6 +45,7 @@ class TextFieldWidget extends StatelessWidget {
   final bool isLast;
   final Widget suffixIcon;
   final Widget suffix;
+  final AutovalidateMode valdte;
 
   @override
   Widget build(BuildContext context) {
@@ -75,6 +77,7 @@ class TextFieldWidget extends StatelessWidget {
             textAlign: textAlign ?? TextAlign.center,
           ),
           TextFormField(
+            autovalidateMode: valdte,
             readOnly: readOnly ?? false,
             maxLines: keyboardType == TextInputType.multiline ? null : 1,
             key: key,

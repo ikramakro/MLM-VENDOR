@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -8,6 +9,7 @@ import '../../../models/booking_status_model.dart';
 import '../../../models/e_provider_model.dart';
 import '../../../models/message_model.dart';
 import '../../../models/statistic.dart';
+import '../../../models/user_model.dart';
 import '../../../repositories/booking_repository.dart';
 import '../../../repositories/chat_repository.dart';
 import '../../../repositories/statistic_repository.dart';
@@ -15,7 +17,7 @@ import '../../../services/auth_service.dart';
 import '../../../services/global_service.dart';
 import '../../root/controllers/root_controller.dart';
 
-class HomeController extends GetxController {
+class HomeController extends GetxController with WidgetsBindingObserver {
   StatisticRepository _statisticRepository;
   BookingRepository _bookingsRepository;
 
@@ -35,6 +37,7 @@ class HomeController extends GetxController {
   ChatRepository _chatRepository;
   ScrollController scrollController;
   var messages = <Message>[].obs;
+  final Rx<User> currentUser = Get.find<AuthService>().user;
 
   HomeController() {
     _statisticRepository = new StatisticRepository();
@@ -43,9 +46,17 @@ class HomeController extends GetxController {
     _authService = Get.find<AuthService>();
   }
 
+  // @override
+  // void onInit() async {
+  //   super.onInit();
+  //   await refreshHome();
+  //   await listenForMessages();
+  //   await TotalRequestsCompleted();
+  // }
   @override
   Future<void> onInit() async {
     await refreshHome();
+    WidgetsBinding.instance.addObserver(this);
     await listenForMessages();
     await TotalRequestsCompleted();
     super.onInit();
@@ -64,6 +75,58 @@ class HomeController extends GetxController {
     }
   }
 
+  // Future updateStatusOffline(String id) async {
+  //   print('user is going offline');
+  //   FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  //   _firestore
+  //       .collection('Users')
+  //       .where('id', isEqualTo: id)
+  //       .get()
+  //       .then((value) {
+  //     _firestore.collection('Users').doc(value.docs[0].id).update({
+  //       'status': false,
+  //     }).catchError((e) {
+  //       print('error');
+  //       print(e.toString());
+  //     });
+  //   });
+  // }
+
+  // Future updateStatusOnline(String id) async {
+  //   print('user is going offline');
+  //   FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  //   _firestore
+  //       .collection('Users')
+  //       .where('id', isEqualTo: id)
+  //       .get()
+  //       .then((value) {
+  //     _firestore.collection('Users').doc(value.docs[0].id).update({
+  //       'status': true,
+  //     }).catchError((e) {
+  //       print('error');
+  //       print(e.toString());
+  //     });
+  //   });
+  // }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    print("State change");
+    print(state.toString());
+    // if (state == AppLifecycleState.inactive) {
+    //   updateStatusOffline(currentUser.value.id);
+    // }
+    // if (state == AppLifecycleState.paused) {
+    //   updateStatusOffline(currentUser.value.id);
+    // }
+    // if (state == AppLifecycleState.detached) {
+    //   updateStatusOffline(currentUser.value.id);
+    // }
+    // if (state == AppLifecycleState.resumed) {
+    //   updateStatusOnline(currentUser.value.id);
+    // }
+  }
+
   Future listenForMessages() async {
     isLoading.value = true;
     isDone.value = false;
@@ -73,7 +136,7 @@ class HomeController extends GetxController {
       userMessages.docs.forEach((element) {
         messages.add(Message.fromDocumentSnapshot(element));
         print("yoooo $messages");
-        _chatRepository.updateStatus(Message.fromDocumentSnapshot(element));
+        // _chatRepository.updateStatus(Message.fromDocumentSnapshot(element));
       });
     }
   }
@@ -82,6 +145,7 @@ class HomeController extends GetxController {
     bookings.value = [];
     print("this is refresh page");
     await getBookingStatuses();
+
     await getStatistics();
     await TotalRequestsCompleted();
 
@@ -104,6 +168,7 @@ class HomeController extends GetxController {
         }
       });
     }
+    // refreshHome();
   }
 
   void changeTab(String statusId) async {

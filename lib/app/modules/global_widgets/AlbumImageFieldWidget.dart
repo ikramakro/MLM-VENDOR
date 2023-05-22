@@ -139,7 +139,7 @@ class AlbumImagesFieldWidget extends StatelessWidget {
                         },
                         shape: StadiumBorder(),
                         color: Get.theme.focusColor.withOpacity(0.1),
-                        child: Text(buttonText ?? "Reset".tr,
+                        child: Text(buttonText ?? "Delete".tr,
                             style: Get.textTheme.bodyText1),
                         elevation: 0,
                         hoverElevation: 0,

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
-import '../../../../common/helper.dart';
+import 'package:get_storage/get_storage.dart';
 import '../../../../common/ui.dart';
 import '../../../models/category_model.dart';
 import '../../../models/e_provider_model.dart';
@@ -18,15 +17,21 @@ import '../../global_widgets/single_select_dialog.dart';
 import '../../global_widgets/text_field_widget.dart';
 import '../../root/controllers/root_controller.dart';
 import '../controllers/auth_controller.dart';
+import 'terms_&_condition.dart';
 
 class RegisterView extends GetView<AuthController> {
   final Setting _settings = Get.find<SettingsService>().setting.value;
-
+  onchangedPassword(String value) {}
   @override
   Widget build(BuildContext context) {
     controller.registerFormKey = new GlobalKey<FormState>();
     return WillPopScope(
-      onWillPop: Helper().onWillPop,
+      onWillPop: () {
+        Get.toNamed(Routes.LOGIN);
+        controller.registerFormKey.currentState.reset();
+        controller.passwordController.clear();
+        return;
+      },
       child: Scaffold(
         appBar: AppBar(
           title: Text(
@@ -39,8 +44,13 @@ class RegisterView extends GetView<AuthController> {
           automaticallyImplyLeading: false,
           elevation: 0,
           leading: new IconButton(
-            icon: new Icon(Icons.arrow_back_ios, color: Get.theme.primaryColor),
-            onPressed: () => {Get.find<RootController>().changePageOutRoot(0)},
+            icon: new Icon(Icons.arrow_back_ios, color: Colors.white),
+            onPressed: () {
+              Get.toNamed(Routes.LOGIN);
+              controller.registerFormKey.currentState.reset();
+              controller.passwordController.clear();
+              // controller.currentUser.value = null;
+            },
           ),
         ),
         body: Form(
@@ -125,8 +135,9 @@ class RegisterView extends GetView<AuthController> {
                         isFirst: true,
                         isLast: false,
                       ),
-                      RegisterTextFieldWidget(
-                        // isFirst: true,
+                      PasswordTextFieldWidget(
+                        isemail: true,
+                        isFirst: true,
                         controller: controller.emailController,
                         labelText: "*Email Address".tr,
                         hintText: "johndoe@gmail.com".tr,
@@ -137,6 +148,7 @@ class RegisterView extends GetView<AuthController> {
                             ? "Should be a valid email".tr
                             : null,
                         iconData: Icons.alternate_email,
+
                         // isLast: false,
                       ),
                       TextFieldWidget(
@@ -153,18 +165,18 @@ class RegisterView extends GetView<AuthController> {
                         iconData: Icons.alternate_email,
                         // isLast: false,
                       ),
-                      TextFieldWidget(
-                        isFirst: false,
-                        onSaved: (input) =>
-                            controller.eProvider.value.description = input,
-                        validator: (input) => input.length < 3
-                            ? "Should be more than 3 letters".tr
-                            : null,
-                        keyboardType: TextInputType.multiline,
-                        initialValue: controller.eProvider.value.description,
-                        hintText: "Description for Architect Mayer Group".tr,
-                        labelText: "*Description".tr,
-                      ),
+                      // TextFieldWidget(
+                      //   isFirst: false,
+                      //   onSaved: (input) =>
+                      //       controller.eProvider.value.description = input,
+                      //   validator: (input) => input.length < 3
+                      //       ? "Should be more than 3 letters".tr
+                      //       : null,
+                      //   keyboardType: TextInputType.multiline,
+                      //   initialValue: controller.eProvider.value.description,
+                      //   hintText: "Description for Architect Mayer Group".tr,
+                      //   labelText: "*Description".tr,
+                      // ),
                       PhoneFieldWidget(
                         readOnly: false,
                         labelText: "*Phone Number".tr,
@@ -182,122 +194,118 @@ class RegisterView extends GetView<AuthController> {
                         isLast: false,
                         isFirst: false,
                       ),
-                      TextFieldWidget(
-                        onSaved: (input) => controller.eProvider.value
-                            .availabilityRange = double.tryParse(input) ?? 0,
-                        validator: (input) => (double.tryParse(input) ?? 0) <= 0
-                            ? "Should be more than 0".tr
-                            : null,
-                        initialValue: controller
-                                .eProvider.value.availabilityRange
-                                ?.toString() ??
-                            null,
-                        keyboardType: TextInputType.numberWithOptions(
-                            signed: false, decimal: true),
-                        hintText: "5".tr,
-                        labelText: "*Availability Range".tr,
-                        suffix: Text(Get.find<SettingsService>()
-                            .setting
-                            .value
-                            .distanceUnit
-                            .tr),
-                      ),
-                      Obx(() {
-                        if (controller.eProviderTypes.isEmpty)
-                          return SizedBox();
-                        else
-                          return Container(
-                            padding: EdgeInsets.only(
-                                top: 8, bottom: 10, left: 20, right: 20),
-                            margin: EdgeInsets.only(
-                                left: 20, right: 20, top: 0, bottom: 0),
-                            decoration: BoxDecoration(
-                                color: Get.theme.primaryColor,
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(10)),
-                                boxShadow: [
-                                  BoxShadow(
-                                      color:
-                                          Get.theme.focusColor.withOpacity(0.1),
-                                      blurRadius: 10,
-                                      offset: Offset(0, 5)),
-                                ],
-                                border: Border.all(
-                                    color: Get.theme.focusColor
-                                        .withOpacity(0.05))),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              children: [
-                                Row(
-                                  children: [
-                                    Expanded(
-                                      child: Text(
-                                        "*Provider Types".tr,
-                                        style: Get.textTheme.bodyText1,
-                                        textAlign: TextAlign.start,
-                                      ),
-                                    ),
-                                    MaterialButton(
-                                      onPressed: () async {
-                                        final selectedValue =
-                                            await showDialog<EProviderType>(
-                                          context: context,
-                                          builder: (BuildContext context) {
-                                            return SelectDialog(
-                                              title: "Select Provider Type".tr,
-                                              submitText: "Submit".tr,
-                                              cancelText: "Cancel".tr,
-                                              items: controller
-                                                  .getSelectProviderTypesItems(),
-                                              initialSelectedValue: controller
-                                                  .eProviderTypes
-                                                  .firstWhere(
-                                                (element) =>
-                                                    element.id ==
-                                                    controller.eProvider.value
-                                                        .type?.id,
-                                                orElse: () =>
-                                                    new EProviderType(),
-                                              ),
-                                            );
-                                          },
-                                        );
-                                        controller.eProvider.update((val) {
-                                          val.type = selectedValue;
-                                        });
-                                      },
-                                      shape: StadiumBorder(),
-                                      color: Get.theme.colorScheme.secondary
-                                          .withOpacity(0.1),
-                                      child: Text("Select".tr,
-                                          style: Get.textTheme.subtitle1),
-                                      elevation: 0,
-                                      hoverElevation: 0,
-                                      focusElevation: 0,
-                                      highlightElevation: 0,
-                                    ),
-                                  ],
-                                ),
-                                Obx(() {
-                                  if (controller.eProvider.value?.type ==
-                                      null) {
-                                    return Padding(
-                                      padding:
-                                          EdgeInsets.symmetric(vertical: 20),
-                                      child: Text(
-                                        "Select providers".tr,
-                                        style: Get.textTheme.caption,
-                                      ),
-                                    );
-                                  } else {
-                                    return buildProviderType(
-                                        controller.eProvider.value);
-                                  }
-                                })
-                              ],
-                            ),
-                          );
-                      }),
+                      // TextFieldWidget(
+                      //   onSaved: (input) => controller.eProvider.value
+                      //       .availabilityRange = double.tryParse(input) ?? 0,
+                      //   validator: (input) => (double.tryParse(input) ?? 0) <= 0
+                      //       ? "Should be more than 0".tr
+                      //       : null,
+                      //   initialValue: controller.eProvider.value.availabilityRange
+                      //           ?.toString() ??
+                      //       null,
+                      //   keyboardType: TextInputType.numberWithOptions(
+                      //       signed: false, decimal: true),
+                      //   hintText: "5".tr,
+                      //   labelText: "*Availability Range".tr,
+                      //   suffix: Text(Get.find<SettingsService>()
+                      //       .setting
+                      //       .value
+                      //       .distanceUnit
+                      //       .tr),
+                      // ),
+                      // Obx(() {
+                      //   if (controller.eProviderTypes.isEmpty)
+                      //     return SizedBox();
+                      //   else
+                      //     return Container(
+                      //       padding: EdgeInsets.only(
+                      //           top: 8, bottom: 10, left: 20, right: 20),
+                      //       margin: EdgeInsets.only(
+                      //           left: 20, right: 20, top: 0, bottom: 0),
+                      //       decoration: BoxDecoration(
+                      //           color: Get.theme.primaryColor,
+                      //           borderRadius:
+                      //               BorderRadius.all(Radius.circular(10)),
+                      //           boxShadow: [
+                      //             BoxShadow(
+                      //                 color:
+                      //                     Get.theme.focusColor.withOpacity(0.1),
+                      //                 blurRadius: 10,
+                      //                 offset: Offset(0, 5)),
+                      //           ],
+                      //           border: Border.all(
+                      //               color:
+                      //                   Get.theme.focusColor.withOpacity(0.05))),
+                      //       child: Column(
+                      //         crossAxisAlignment: CrossAxisAlignment.stretch,
+                      //         children: [
+                      //           Row(
+                      //             children: [
+                      //               Expanded(
+                      //                 child: Text(
+                      //                   "*Provider Types".tr,
+                      //                   style: Get.textTheme.bodyText1,
+                      //                   textAlign: TextAlign.start,
+                      //                 ),
+                      //               ),
+                      //               MaterialButton(
+                      //                 onPressed: () async {
+                      //                   final selectedValue =
+                      //                       await showDialog<EProviderType>(
+                      //                     context: context,
+                      //                     builder: (BuildContext context) {
+                      //                       return SelectDialog(
+                      //                         title: "Select Provider Type".tr,
+                      //                         submitText: "Submit".tr,
+                      //                         cancelText: "Cancel".tr,
+                      //                         items: controller
+                      //                             .getSelectProviderTypesItems(),
+                      //                         initialSelectedValue: controller
+                      //                             .eProviderTypes
+                      //                             .firstWhere(
+                      //                           (element) =>
+                      //                               element.id ==
+                      //                               controller
+                      //                                   .eProvider.value.type?.id,
+                      //                           orElse: () => new EProviderType(),
+                      //                         ),
+                      //                       );
+                      //                     },
+                      //                   );
+                      //                   controller.eProvider.update((val) {
+                      //                     val.type = selectedValue;
+                      //                   });
+                      //                 },
+                      //                 shape: StadiumBorder(),
+                      //                 color: Get.theme.colorScheme.secondary
+                      //                     .withOpacity(0.1),
+                      //                 child: Text("Select".tr,
+                      //                     style: Get.textTheme.subtitle1),
+                      //                 elevation: 0,
+                      //                 hoverElevation: 0,
+                      //                 focusElevation: 0,
+                      //                 highlightElevation: 0,
+                      //               ),
+                      //             ],
+                      //           ),
+                      //           Obx(() {
+                      //             if (controller.eProvider.value?.type == null) {
+                      //               return Padding(
+                      //                 padding: EdgeInsets.symmetric(vertical: 20),
+                      //                 child: Text(
+                      //                   "Select providers".tr,
+                      //                   style: Get.textTheme.caption,
+                      //                 ),
+                      //               );
+                      //             } else {
+                      //               return buildProviderType(
+                      //                   controller.eProvider.value);
+                      //             }
+                      //           })
+                      //         ],
+                      //       ),
+                      //     );
+                      // }),
                       Container(
                         padding: EdgeInsets.only(
                             top: 8, bottom: 10, left: 20, right: 20),
@@ -355,8 +363,9 @@ class RegisterView extends GetView<AuthController> {
                                         );
                                       },
                                     );
+
                                     controller.selectedCategory.value =
-                                        selectedValues?.toList();
+                                        selectedValues.toList();
                                     controller.selectedCategoryId.value =
                                         controller.selectedCategory[0].id;
                                     controller.selectedCategoryName.value =
@@ -395,6 +404,14 @@ class RegisterView extends GetView<AuthController> {
                                     style: Get.textTheme.caption,
                                   ),
                                 );
+                              } else if (controller.selectedCategory.isEmpty) {
+                                return Padding(
+                                  padding: EdgeInsets.symmetric(vertical: 20),
+                                  child: Text(
+                                    "Select Category".tr,
+                                    style: Get.textTheme.caption,
+                                  ),
+                                );
                               }
                               // else if (!controller.categoryName.value.isEmpty) {
                               //   return buildProviderCategory(
@@ -408,36 +425,42 @@ class RegisterView extends GetView<AuthController> {
                           ],
                         ),
                       ),
+                      Column(
+                        children: [
+                          Obx(() {
+                            return PasswordTextFieldWidget(
+                              isemail: false,
+                              valdte: AutovalidateMode.always,
+                              controller: controller.passwordController,
+                              labelText: "*Password".tr,
+                              hintText: "••••••••••••".tr,
+                              initialValue:
+                                  controller.currentUser?.value?.password,
+                              onSaved: (input) =>
+                                  controller.currentUser.value.password = input,
+                              validator: (input) => validatePassword(input),
+                              obscureText: controller.hidePassword.value,
+                              iconData: Icons.lock_outline,
+                              keyboardType: TextInputType.visiblePassword,
+                              isLast: true,
+                              isFirst: false,
+                              suffixIcon: IconButton(
+                                onPressed: () {
+                                  controller.hidePassword.value =
+                                      !controller.hidePassword.value;
+                                },
+                                color: Theme.of(context).focusColor,
+                                icon: Icon(controller.hidePassword.value
+                                    ? Icons.visibility_outlined
+                                    : Icons.visibility_off_outlined),
+                              ),
+                            );
+                          }),
+                        ],
+                      ),
                       Obx(() {
-                        return RegisterTextFieldWidget(
-                          controller: controller.passwordController,
-                          labelText: "*Password".tr,
-                          hintText: "••••••••••••".tr,
-                          initialValue: controller.currentUser?.value?.password,
-                          onSaved: (input) =>
-                              controller.currentUser.value.password = input,
-                          validator: (input) => input.length < 3
-                              ? "Should be more than 3 characters".tr
-                              : null,
-                          obscureText: controller.hidePassword.value,
-                          iconData: Icons.lock_outline,
-                          keyboardType: TextInputType.visiblePassword,
-                          isLast: true,
-                          isFirst: false,
-                          suffixIcon: IconButton(
-                            onPressed: () {
-                              controller.hidePassword.value =
-                                  !controller.hidePassword.value;
-                            },
-                            color: Theme.of(context).focusColor,
-                            icon: Icon(controller.hidePassword.value
-                                ? Icons.visibility_outlined
-                                : Icons.visibility_off_outlined),
-                          ),
-                        );
-                      }),
-                      Obx(() {
-                        return TextFieldWidget(
+                        return PasswordTextFieldWidget(
+                          isemail: false,
                           labelText: "Confirm Password".tr,
                           hintText: "••••••••••••".tr,
                           // initialValue: controller.currentUser?.value?.password,
@@ -464,6 +487,27 @@ class RegisterView extends GetView<AuthController> {
                           ),
                         );
                       }),
+                      // SizedBox(
+                      //   height: MediaQuery.of(context).size.width * 2 / 100,
+                      // ),
+                      Row(
+                        children: [
+                          Obx(
+                            () => Checkbox(
+                                value: controller.checkBoxValue.value,
+                                onChanged: (value) {
+                                  controller.checkBoxValue.value =
+                                      !controller.checkBoxValue.value;
+                                }),
+                          ),
+                          TextButton(
+                            child: Text('Terms and Condition'),
+                            onPressed: () {
+                              Get.to(() => TermsAndConditionsScreen());
+                            },
+                          )
+                        ],
+                      )
                     ],
                   );
                 }
@@ -481,8 +525,10 @@ class RegisterView extends GetView<AuthController> {
                 SizedBox(
                   width: Get.width,
                   child: BlockButtonWidget(
-                    onPressed: () async {
-                      await controller.register();
+                    onPressed: () {
+                      Get.log('button is ok');
+                      return controller.register();
+
                       // if (!controller.selectedCategory.isEmpty &&
                       //     controller.eProvider.value.type != null) {
                       //
@@ -541,4 +587,27 @@ class RegisterView extends GetView<AuthController> {
       ),
     );
   }
+}
+
+String validatePassword(String value) {
+  if (value == null || value.isEmpty) {
+    return '';
+  }
+
+  if (!value.contains(new RegExp(r'[A-Z]'))) {
+    return '';
+  }
+  if (!value.contains(new RegExp(r'[a-z]'))) {
+    return '';
+  }
+  if (!value.contains(new RegExp(r'[0-9]'))) {
+    return '';
+  }
+  if (!value.contains(new RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) {
+    return '';
+  }
+  if (value.length < 8) {
+    return '';
+  }
+  return null;
 }

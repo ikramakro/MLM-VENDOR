@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2020 .
+ */
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

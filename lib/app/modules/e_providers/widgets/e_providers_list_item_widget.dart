@@ -85,7 +85,7 @@ class EProvidersListItemWidget extends StatelessWidget {
                   SizedBox(
                     height: 5,
                   ),
-                  Text("please wait for Approval From admin"),
+                  Text("Please wait for Approval From admin"),
                 ],
               )
           ],

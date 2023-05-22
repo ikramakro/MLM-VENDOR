@@ -1,19 +1,19 @@
 import UIKit
 import Flutter
-import Firebase
+include "GeneratedPluginRegistrant.h"
 import GoogleMaps
+import flutter_background_service_ios
 
 @UIApplicationMain
 @objc class AppDelegate: FlutterAppDelegate {
-    
   override func application(
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
-    FirebaseApp.configure()
-    GeneratedPluginRegistrant.register(with: self)
+    SwiftFlutterBackgroundServicePlugin.taskIdentifier = "your.custom.task.identifier"
+    // [GMSServices provideAPIKey:@"AIzaSyCmzUjNgFmIHHILzQa8Pa-PsB6oDTJRTpE"];
     GMSServices.provideAPIKey("AIzaSyCmzUjNgFmIHHILzQa8Pa-PsB6oDTJRTpE")
+    GeneratedPluginRegistrant.register(with: self)
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
-    
 }

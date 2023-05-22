@@ -5,6 +5,7 @@ import '../../../models/availability_hour_model.dart';
 import '../../../models/media_model.dart';
 import '../../global_widgets/image_field_widget.dart';
 import '../../global_widgets/phone_field_widget.dart';
+import '../../global_widgets/registerTextField.dart';
 import '../../global_widgets/text_field_widget.dart';
 import '../controllers/profile_controller.dart';
 import '../widgets/delete_account_widget.dart';
@@ -212,13 +213,13 @@ class ProfileView extends GetView<ProfileController> {
               //   labelText: "Address".tr,
               //   iconData: Icons.map_outlined,
               // ),
-              TextFieldWidget(
-                onSaved: (input) => controller.user.value.bio = input,
-                initialValue: controller.user.value.bio,
-                hintText: "Your short biography here".tr,
-                labelText: "Short Biography".tr,
-                iconData: Icons.article_outlined,
-              ),
+              // TextFieldWidget(
+              //   onSaved: (input) => controller.user.value.bio = input,
+              //   initialValue: controller.user.value.bio,
+              //   hintText: "Your short biography here".tr,
+              //   labelText: "Short Biography".tr,
+              //   iconData: Icons.article_outlined,
+              // ),
               Text("Change password".tr, style: Get.textTheme.headline5)
                   .paddingOnly(top: 25, bottom: 0, right: 22, left: 22),
               Text(
@@ -255,44 +256,41 @@ class ProfileView extends GetView<ProfileController> {
                 );
               }),
               Obx(() {
-                return TextFieldWidget(
+                return PasswordTextFieldWidget(
+                  controller: controller.passwordcontroller,
+                  isemail: false,
+                  valdte: AutovalidateMode.always,
                   labelText: "New Password".tr,
                   hintText: "••••••••••••".tr,
                   onSaved: (input) => controller.newPassword.value = input,
-                  onChanged: (input) => controller.newPassword.value = input,
+                  onChanged: (input) {
+                    controller.newPassword.value = input;
+                    // Get.log(' n Onchanged  ${controller.newPassword.value}');
+                  },
                   validator: (input) {
-                    if (input.length > 0 && input.length < 3) {
-                      return "Should be more than 3 letters".tr;
-                    } else if (input != controller.confirmPassword.value) {
-                      return "Passwords do not match".tr;
-                    } else {
-                      return null;
-                    }
+                    return validatePassword(input);
                   },
                   initialValue: controller.newPassword.value,
                   obscureText: controller.hidePassword.value,
                   iconData: Icons.lock_outline,
                   keyboardType: TextInputType.visiblePassword,
-                  isFirst: false,
+                  isFirst: true,
                   isLast: false,
                 );
               }),
               Obx(() {
-                return TextFieldWidget(
+                return PasswordTextFieldWidget(
+                  isemail: false,
+                  valdte: AutovalidateMode.always,
                   labelText: "Confirm New Password".tr,
                   hintText: "••••••••••••".tr,
                   onSaved: (input) => controller.confirmPassword.value = input,
                   onChanged: (input) =>
                       controller.confirmPassword.value = input,
-                  validator: (input) {
-                    if (input.length > 0 && input.length < 3) {
-                      return "Should be more than 3 letters".tr;
-                    } else if (input != controller.newPassword.value) {
-                      return "Passwords do not match".tr;
-                    } else {
-                      return null;
-                    }
-                  },
+                  validator: (input) =>
+                      controller.passwordcontroller.text != input
+                          ? "password not match".tr
+                          : null,
                   initialValue: controller.confirmPassword.value,
                   obscureText: controller.hidePassword.value,
                   iconData: Icons.lock_outline,
@@ -663,4 +661,27 @@ class ProfileView extends GetView<ProfileController> {
       ),
     );
   }
+}
+
+String validatePassword(String value) {
+  if (value == null || value.isEmpty) {
+    return '';
+  }
+
+  if (!value.contains(new RegExp(r'[A-Z]'))) {
+    return '';
+  }
+  if (!value.contains(new RegExp(r'[a-z]'))) {
+    return '';
+  }
+  if (!value.contains(new RegExp(r'[0-9]'))) {
+    return '';
+  }
+  if (!value.contains(new RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) {
+    return '';
+  }
+  if (value.length < 8) {
+    return '';
+  }
+  return null;
 }
