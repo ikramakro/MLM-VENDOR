@@ -24,9 +24,9 @@ class TextFieldWidget extends StatelessWidget {
       this.style,
       this.textAlign,
       this.suffix,
-      this.controller})
+      this.valdte})
       : super(key: key);
-  final TextEditingController controller;
+
   final FormFieldSetter<String> onSaved;
   final ValueChanged<String> onChanged;
   final FormFieldValidator<String> validator;
@@ -45,6 +45,7 @@ class TextFieldWidget extends StatelessWidget {
   final bool isLast;
   final Widget suffixIcon;
   final Widget suffix;
+  final AutovalidateMode valdte;
 
   @override
   Widget build(BuildContext context) {
@@ -76,7 +77,7 @@ class TextFieldWidget extends StatelessWidget {
             textAlign: textAlign ?? TextAlign.center,
           ),
           TextFormField(
-            controller: controller,
+            autovalidateMode: valdte,
             readOnly: readOnly ?? false,
             maxLines: keyboardType == TextInputType.multiline ? null : 1,
             key: key,

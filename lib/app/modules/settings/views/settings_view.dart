@@ -36,22 +36,22 @@ class SettingsView extends GetView<SettingsController> {
                   controller.changePage(id);
                 },
               ),
-              // ChipWidget(
-              //   tag: 'settings',
-              //   text: "Languages".tr,
-              //   id: 1,
-              //   onSelected: (id) {
-              //     controller.changePage(id);
-              //   },
-              // ),
-              // ChipWidget(
-              //   tag: 'settings',
-              //   text: "Theme Mode".tr,
-              //   id: 2,
-              //   onSelected: (id) {
-              //     controller.changePage(id);
-              //   },
-              // )
+              ChipWidget(
+                tag: 'settings',
+                text: "Languages".tr,
+                id: 1,
+                onSelected: (id) {
+                  controller.changePage(id);
+                },
+              ),
+              ChipWidget(
+                tag: 'settings',
+                text: "Theme Mode".tr,
+                id: 2,
+                onSelected: (id) {
+                  controller.changePage(id);
+                },
+              )
             ],
           )),
       body: WillPopScope(

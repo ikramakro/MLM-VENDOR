@@ -2,11 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../../common/helper.dart';
+import '../../../../common/ui.dart';
+import '../../../models/category_model.dart';
 import '../../../models/e_provider_model.dart';
+import '../../../models/e_provider_type_model.dart';
 import '../../../models/media_model.dart';
 import '../../../services/settings_service.dart';
+import '../../global_widgets/image_field_widget.dart';
 import '../../global_widgets/images_field_widget.dart';
 import '../../global_widgets/phone_field_widget.dart';
+import '../../global_widgets/select_dialog.dart';
+import '../../global_widgets/single_select_dialog.dart';
 import '../../global_widgets/text_field_widget.dart';
 import '../controllers/e_provider_form_controller.dart';
 import '../widgets/horizontal_stepper_widget.dart';
@@ -129,21 +135,96 @@ class EProviderFormView extends GetView<EProviderFormController> {
                       index: Text("2",
                           style: TextStyle(color: Get.theme.primaryColor)),
                     ),
-                    // StepWidget(
-                    //   title: Text(
-                    //     "Availability".tr,
-                    //   ),
-                    //   color: Get.theme.focusColor,
-                    //   index: Text("3",
-                    //       style: TextStyle(color: Get.theme.primaryColor)),
-                    // ),
+                    StepWidget(
+                      title: Text(
+                        "Availability".tr,
+                      ),
+                      color: Get.theme.focusColor,
+                      index: Text("3",
+                          style: TextStyle(color: Get.theme.primaryColor)),
+                    ),
                   ],
                 ),
-                Text("Provider details".tr, style: Get.textTheme.headline5)
+                Text("Business Page".tr, style: Get.textTheme.headline5)
                     .paddingOnly(top: 25, bottom: 0, right: 22, left: 22),
                 Text("Fill the following details and save them".tr,
                         style: Get.textTheme.caption)
                     .paddingSymmetric(horizontal: 22, vertical: 5),
+                Obx(() {
+                  return ImageFieldWidget(
+                    label: "Profile Image".tr,
+                    field: 'avatar',
+                    tag: controller.eProviderForm.hashCode.toString(),
+                    initialImage: controller.avatar.value,
+                    uploadCompleted: (uuid) {
+                      controller.avatar.value = new Media(id: uuid);
+                    },
+                    reset: (uuid) {
+                      controller.avatar.value =
+                          new Media(thumb: controller.user.value.avatar.thumb);
+                    },
+                  );
+                }),
+                Container(
+                    padding: EdgeInsets.only(
+                        top: 20, bottom: 14, left: 20, right: 20),
+                    margin:
+                        EdgeInsets.only(left: 20, right: 20, top: 0, bottom: 0),
+                    decoration: BoxDecoration(
+                        color: Get.theme.primaryColor,
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                        boxShadow: [
+                          BoxShadow(
+                              color: Get.theme.focusColor.withOpacity(0.1),
+                              blurRadius: 10,
+                              offset: Offset(0, 5)),
+                        ],
+                        border: Border.all(
+                            color: Get.theme.focusColor.withOpacity(0.05))),
+                    child: Obx(
+                      () => Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            controller.available_status.value,
+                            style: Get.textTheme.bodyText1,
+                            textAlign: TextAlign.start,
+                          ),
+                          Switch(
+                              value: controller.availableStatusValueBool.value,
+                              onChanged: (value) {
+                                controller.availableStatusValueBool.value =
+                                    !controller.availableStatusValueBool.value;
+                                if (value) {
+                                  controller.availableStatusValue.value = 1;
+                                  controller.available_status.value =
+                                      "available to get orders";
+
+                                  Get.snackbar(
+                                    'Note',
+                                    'This will make your profile visible to search Please make sure your profile is complete',
+                                    icon: Icon(Icons.warning_rounded),
+                                    snackPosition: SnackPosition.BOTTOM,
+                                    backgroundColor: Colors.orange,
+                                    colorText: Colors.white,
+                                  );
+                                } else {
+                                  controller.availableStatusValue.value = 0;
+                                  controller.available_status.value =
+                                      "Unavailable to get orders";
+                                  Get.snackbar(
+                                    'Note',
+                                    'This action will hide your profile from searches',
+                                    icon: Icon(Icons.warning_rounded),
+                                    snackPosition: SnackPosition.BOTTOM,
+                                    backgroundColor: Colors.orange,
+                                    colorText: Colors.white,
+                                  );
+                                }
+                              })
+                        ],
+                      ),
+                    )),
                 Obx(() {
                   return ImagesFieldWidget(
                     label: "Images".tr,
@@ -183,145 +264,145 @@ class EProviderFormView extends GetView<EProviderFormController> {
                   hintText: "Description for Architect Mayer Group".tr,
                   labelText: "*Profile Overview".tr,
                 ),
-                PhoneFieldWidget(
-                  readOnly: true,
-                  labelText: "Phone Number".tr,
-                  hintText: "223 665 7896".tr,
-                  initialCountryCode: Helper.getPhoneNumber(
-                          controller.eProvider.value.phoneNumber)
-                      ?.countryISOCode,
-                  initialValue: Helper.getPhoneNumber(
-                          controller.eProvider.value.phoneNumber)
-                      ?.number,
-                  onSaved: (phone) {
-                    return controller.eProvider.value.phoneNumber =
-                        phone.completeNumber;
-                  },
-                ),
-                PhoneFieldWidget(
-                  readOnly: true,
-                  labelText: "Mobile Number".tr,
-                  hintText: "223 665 7896".tr,
-                  initialCountryCode: Helper.getPhoneNumber(
-                          controller.eProvider.value.mobileNumber)
-                      ?.countryISOCode,
-                  initialValue: Helper.getPhoneNumber(
-                          controller.eProvider.value.mobileNumber)
-                      ?.number,
-                  onSaved: (phone) {
-                    return controller.eProvider.value.mobileNumber =
-                        phone.completeNumber;
-                  },
-                ),
-                TextFieldWidget(
-                  onSaved: (input) => controller.eProvider.value
-                      .availabilityRange = double.tryParse(input) ?? 0,
-                  validator: (input) => (double.tryParse(input) ?? 0) <= 0
-                      ? "Should be more than 0".tr
-                      : null,
-                  initialValue: controller.eProvider.value.availabilityRange
-                          ?.toString() ??
-                      null,
-                  keyboardType: TextInputType.numberWithOptions(
-                      signed: false, decimal: true),
-                  hintText: "5".tr,
-                  labelText: "Availability Range".tr,
-                  suffix: Text(Get.find<SettingsService>()
-                      .setting
-                      .value
-                      .distanceUnit
-                      .tr),
-                ),
-                // Obx(() {
-                //   if (controller.eProviderTypes.isEmpty)
-                //     return SizedBox();
-                //   else
-                //     return Container(
-                //       padding: EdgeInsets.only(
-                //           top: 8, bottom: 10, left: 20, right: 20),
-                //       margin: EdgeInsets.only(
-                //           left: 20, right: 20, top: 20, bottom: 20),
-                //       decoration: BoxDecoration(
-                //           color: Get.theme.primaryColor,
-                //           borderRadius: BorderRadius.all(Radius.circular(10)),
-                //           boxShadow: [
-                //             BoxShadow(
-                //                 color: Get.theme.focusColor.withOpacity(0.1),
-                //                 blurRadius: 10,
-                //                 offset: Offset(0, 5)),
-                //           ],
-                //           border: Border.all(
-                //               color: Get.theme.focusColor.withOpacity(0.05))),
-                //       child: Column(
-                //         crossAxisAlignment: CrossAxisAlignment.stretch,
-                //         children: [
-                //           Row(
-                //             children: [
-                //               Expanded(
-                //                 child: Text(
-                //                   "Provider Types".tr,
-                //                   style: Get.textTheme.bodyText1,
-                //                   textAlign: TextAlign.start,
-                //                 ),
-                //               ),
-                //               MaterialButton(
-                //                 onPressed: () async {
-                //                   final selectedValue =
-                //                       await showDialog<EProviderType>(
-                //                     context: context,
-                //                     builder: (BuildContext context) {
-                //                       return SelectDialog(
-                //                         title: "Select Provider Type".tr,
-                //                         submitText: "Submit".tr,
-                //                         cancelText: "Cancel".tr,
-                //                         items: controller
-                //                             .getSelectProviderTypesItems(),
-                //                         initialSelectedValue: controller
-                //                             .eProviderTypes
-                //                             .firstWhere(
-                //                           (element) =>
-                //                               element.id ==
-                //                               controller
-                //                                   .eProvider.value.type?.id,
-                //                           orElse: () => new EProviderType(),
-                //                         ),
-                //                       );
-                //                     },
-                //                   );
-                //                   controller.eProvider.update((val) {
-                //                     val.type = selectedValue;
-                //                   });
-                //                 },
-                //                 shape: StadiumBorder(),
-                //                 color: Get.theme.colorScheme.secondary
-                //                     .withOpacity(0.1),
-                //                 child: Text("Select".tr,
-                //                     style: Get.textTheme.subtitle1),
-                //                 elevation: 0,
-                //                 hoverElevation: 0,
-                //                 focusElevation: 0,
-                //                 highlightElevation: 0,
-                //               ),
-                //             ],
-                //           ),
-                //           Obx(() {
-                //             if (controller.eProvider.value?.type == null) {
-                //               return Padding(
-                //                 padding: EdgeInsets.symmetric(vertical: 20),
-                //                 child: Text(
-                //                   "Select providers".tr,
-                //                   style: Get.textTheme.caption,
-                //                 ),
-                //               );
-                //             } else {
-                //               return buildProviderType(
-                //                   controller.eProvider.value);
-                //             }
-                //           })
-                //         ],
-                //       ),
-                //     );
-                // }),
+                // PhoneFieldWidget(
+                //   // readOnly: true,
+                //   labelText: "Phone Number".tr,
+                //   hintText: "223 665 7896".tr,
+                //   initialCountryCode: Helper.getPhoneNumber(
+                //           controller.eProvider.value.phoneNumber)
+                //       ?.countryISOCode,
+                //   initialValue: Helper.getPhoneNumber(
+                //           controller.eProvider.value.phoneNumber)
+                //       ?.number,
+                //   onSaved: (phone) {
+                //     return controller.eProvider.value.phoneNumber =
+                //         phone.completeNumber;
+                //   },
+                // ),
+                // PhoneFieldWidget(
+                //   // readOnly: true,
+                //   labelText: "Mobile Number".tr,
+                //   hintText: "223 665 7896".tr,
+                //   initialCountryCode: Helper.getPhoneNumber(
+                //           controller.eProvider.value.mobileNumber)
+                //       ?.countryISOCode,
+                //   initialValue: Helper.getPhoneNumber(
+                //           controller.eProvider.value.mobileNumber)
+                //       ?.number,
+                //   onSaved: (phone) {
+                //     return controller.eProvider.value.mobileNumber =
+                //         phone.completeNumber;
+                //   },
+                // ),
+                // TextFieldWidget(
+                //   onSaved: (input) => controller.eProvider.value
+                //       .availabilityRange = double.tryParse(input) ?? 0,
+                //   validator: (input) => (double.tryParse(input) ?? 0) <= 0
+                //       ? "Should be more than 0".tr
+                //       : null,
+                //   initialValue: controller.eProvider.value.availabilityRange
+                //           ?.toString() ??
+                //       null,
+                //   keyboardType: TextInputType.numberWithOptions(
+                //       signed: false, decimal: true),
+                //   hintText: "5".tr,
+                //   labelText: "Availability Range".tr,
+                //   suffix: Text(Get.find<SettingsService>()
+                //       .setting
+                //       .value
+                //       .distanceUnit
+                //       .tr),
+                // ),
+                Obx(() {
+                  if (controller.eProviderTypes.isEmpty)
+                    return SizedBox();
+                  else
+                    return Container(
+                      padding: EdgeInsets.only(
+                          top: 8, bottom: 10, left: 20, right: 20),
+                      margin: EdgeInsets.only(
+                          left: 20, right: 20, top: 20, bottom: 20),
+                      decoration: BoxDecoration(
+                          color: Get.theme.primaryColor,
+                          borderRadius: BorderRadius.all(Radius.circular(10)),
+                          boxShadow: [
+                            BoxShadow(
+                                color: Get.theme.focusColor.withOpacity(0.1),
+                                blurRadius: 10,
+                                offset: Offset(0, 5)),
+                          ],
+                          border: Border.all(
+                              color: Get.theme.focusColor.withOpacity(0.05))),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  "Provider Types".tr,
+                                  style: Get.textTheme.bodyText1,
+                                  textAlign: TextAlign.start,
+                                ),
+                              ),
+                              MaterialButton(
+                                onPressed: () async {
+                                  final selectedValue =
+                                      await showDialog<EProviderType>(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return SelectDialog(
+                                        title: "Select Provider Type".tr,
+                                        submitText: "Submit".tr,
+                                        cancelText: "Cancel".tr,
+                                        items: controller
+                                            .getSelectProviderTypesItems(),
+                                        initialSelectedValue: controller
+                                            .eProviderTypes
+                                            .firstWhere(
+                                          (element) =>
+                                              element.id ==
+                                              controller
+                                                  .eProvider.value.type?.id,
+                                          orElse: () => new EProviderType(),
+                                        ),
+                                      );
+                                    },
+                                  );
+                                  controller.eProvider.update((val) {
+                                    val.type = selectedValue;
+                                  });
+                                },
+                                shape: StadiumBorder(),
+                                color: Get.theme.colorScheme.secondary
+                                    .withOpacity(0.1),
+                                child: Text("Select".tr,
+                                    style: Get.textTheme.subtitle1),
+                                elevation: 0,
+                                hoverElevation: 0,
+                                focusElevation: 0,
+                                highlightElevation: 0,
+                              ),
+                            ],
+                          ),
+                          Obx(() {
+                            if (controller.eProvider.value?.type == null) {
+                              return Padding(
+                                padding: EdgeInsets.symmetric(vertical: 20),
+                                child: Text(
+                                  "Select providers".tr,
+                                  style: Get.textTheme.caption,
+                                ),
+                              );
+                            } else {
+                              return buildProviderType(
+                                  controller.eProvider.value);
+                            }
+                          })
+                        ],
+                      ),
+                    );
+                }),
                 Container(
                   padding:
                       EdgeInsets.only(top: 8, bottom: 10, left: 20, right: 20),
@@ -350,64 +431,64 @@ class EProviderFormView extends GetView<EProviderFormController> {
                               textAlign: TextAlign.start,
                             ),
                           ),
+                          if (controller.selectedCategory.isEmpty)
+                            MaterialButton(
+                              onPressed: () async {
+                                final selectedValues =
+                                    await showDialog<Set<Category>>(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return SingleSelectDialog(
+                                      title: "Select Category".tr,
+                                      submitText: "Submit".tr,
+                                      cancelText: "Cancel".tr,
+                                      items: controller
+                                          .getMultiSelectCategoriesItems(),
+                                      initialSelectedValues: controller
+                                          .categories
+                                          .where(
+                                            (category) =>
+                                                (controller.eProvider.value
+                                                        .cat_id ==
+                                                    category.id?.isNotEmpty) ??
+                                                false,
+                                          )
+                                          .toSet(),
+                                      // initialSelectedValues:
+                                    );
+                                  },
+                                );
+                                controller.selectedCategory.value =
+                                    selectedValues?.toList();
+                                controller.selectedCategoryId.value =
+                                    controller.selectedCategory[0].id;
+                                controller.selectedCategoryName.value =
+                                    controller.selectedCategory[0].name;
+                                if (controller.selectedCategoryId != null) {
+                                  controller.eProvider.value.cat_id =
+                                      controller.selectedCategoryId.value;
+                                  controller.eProvider.value.type =
+                                      controller.eProviderTypes[0];
+                                }
 
-                          // if (controller.selectedCategory.isEmpty)
-                          // MaterialButton(
-                          //   onPressed: () async {
-                          //     final selectedValues =
-                          //         await showDialog<Set<Category>>(
-                          //       context: context,
-                          //       builder: (BuildContext context) {
-                          //         return SingleSelectDialog(
-                          //           title: "Select Category".tr,
-                          //           submitText: "Submit".tr,
-                          //           cancelText: "Cancel".tr,
-                          //           items: controller
-                          //               .getMultiSelectCategoriesItems(),
-                          //           initialSelectedValues: controller.categories
-                          //               .where(
-                          //                 (category) =>
-                          //                     (controller
-                          //                             .eProvider.value.cat_id ==
-                          //                         category.id?.isNotEmpty) ??
-                          //                     false,
-                          //               )
-                          //               .toSet(),
-                          //           // initialSelectedValues:
-                          //         );
-                          //       },
-                          //     );
-                          //     controller.selectedCategory.value =
-                          //         selectedValues?.toList();
-                          //     controller.selectedCategoryId.value =
-                          //         controller.selectedCategory[0].id;
-                          //     controller.selectedCategoryName.value =
-                          //         controller.selectedCategory[0].name;
-                          //     if (controller.selectedCategoryId != null) {
-                          //       controller.eProvider.value.cat_id =
-                          //           controller.selectedCategoryId.value;
-                          //       controller.eProvider.value.type =
-                          //           controller.eProviderTypes[0];
-                          //     }
-                          //
-                          //     // print("selected catagry is $selectedValues");
-                          //     // print(
-                          //     //     "selected catagry is ${controller.selectedCategoryId.value}");
-                          //     // print(
-                          //     //     "selected catagry is ${controller.selectedCategoryName.value}");
-                          //     // print(
-                          //     //     "list of map array ${controller.selectedCategory[0].id}");
-                          //   },
-                          //   shape: StadiumBorder(),
-                          //   color: Get.theme.colorScheme.secondary
-                          //       .withOpacity(0.1),
-                          //   child: Text("Select".tr,
-                          //       style: Get.textTheme.subtitle1),
-                          //   elevation: 0,
-                          //   hoverElevation: 0,
-                          //   focusElevation: 0,
-                          //   highlightElevation: 0,
-                          // ),
+                                // print("selected catagry is $selectedValues");
+                                // print(
+                                //     "selected catagry is ${controller.selectedCategoryId.value}");
+                                // print(
+                                //     "selected catagry is ${controller.selectedCategoryName.value}");
+                                // print(
+                                //     "list of map array ${controller.selectedCategory[0].id}");
+                              },
+                              shape: StadiumBorder(),
+                              color: Get.theme.colorScheme.secondary
+                                  .withOpacity(0.1),
+                              child: Text("Select".tr,
+                                  style: Get.textTheme.subtitle1),
+                              elevation: 0,
+                              hoverElevation: 0,
+                              focusElevation: 0,
+                              highlightElevation: 0,
+                            ),
                         ],
                       ),
                       SizedBox(

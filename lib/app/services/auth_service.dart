@@ -4,6 +4,8 @@ import 'package:get_storage/get_storage.dart';
 import '../models/user_model.dart';
 import '../repositories/user_repository.dart';
 import 'settings_service.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:path_provider/path_provider.dart';
 
 class AuthService extends GetxService {
   final user = User().obs;
@@ -28,7 +30,6 @@ class AuthService extends GetxService {
   }
 
   Future getCurrentUser() async {
-    // user.value.auth = false;
     if (user.value.auth == null && _box.hasData('current_user')) {
       user.value = User.fromJson(await _box.read('current_user'));
       user.value.auth = true;
@@ -41,7 +42,6 @@ class AuthService extends GetxService {
     user.value = new User();
     await _usersRepo.signOut();
     await _box.remove('current_user');
-    print("this current user is deleted");
   }
 
   Future isRoleChanged() async {
@@ -54,6 +54,22 @@ class AuthService extends GetxService {
     } catch (e) {
       print(e);
     }
+  }
+
+  Future<void> clear() async {
+    // Clear user-specific data from your app's state and API client
+
+    // Clear the cache
+    await DefaultCacheManager().emptyCache();
+
+    // Delete any user-specific files
+    final appDir = await getApplicationDocumentsDirectory();
+    final files = await appDir.list().toList();
+    files.forEach((file) {
+      if (file.path.contains('previous_user_id')) {
+        file.deleteSync();
+      }
+    });
   }
 
   bool get isAuth => user.value.auth ?? false;

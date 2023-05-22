@@ -39,7 +39,6 @@ class FireBaseMessagingService extends GetxService {
   Future fcmOnLaunchListeners() async {
     RemoteMessage message =
         await FirebaseMessaging.instance.getInitialMessage();
-
     if (message != null) {
       _notificationsBackground(message);
     }
@@ -76,10 +75,6 @@ class FireBaseMessagingService extends GetxService {
   Future<void> setDeviceToken() async {
     Get.find<AuthService>().user.value.deviceToken =
         await FirebaseMessaging.instance.getToken();
-  }
-
-  Future<void> delDeviceToken() async {
-    FirebaseMessaging.instance.deleteToken();
   }
 
   void _bookingNotification(RemoteMessage message) {

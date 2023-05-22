@@ -9,7 +9,13 @@ import '../../../repositories/category_repository.dart';
 import '../../../repositories/e_provider_repository.dart';
 import '../../../repositories/e_service_repository.dart';
 
-enum CategoryFilter { ALL, AVAILABILITY, RATING, FEATURED, POPULAR }
+enum CategoryFilter {
+  ALL,
+  // AVAILABILITY,
+  RATING,
+  FEATURED,
+  POPULAR,
+}
 
 class EServicesController extends GetxController {
   final selected = Rx<CategoryFilter>(CategoryFilter.ALL);
@@ -136,10 +142,10 @@ class EServicesController extends GetxController {
           _eServices = await _eProviderRepository.getMostRatedEServices(
               page: this.page.value);
           break;
-        case CategoryFilter.AVAILABILITY:
-          _eServices = await _eProviderRepository.getAvailableEServices(
-              page: this.page.value);
-          break;
+        // case CategoryFilter.AVAILABILITY:
+        //   _eServices = await _eProviderRepository.getAvailableEServices(
+        //       page: this.page.value);
+        //   break;
         default:
           _eServices =
               await _eProviderRepository.getEServices(page: this.page.value);

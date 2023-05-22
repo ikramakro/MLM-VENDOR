@@ -3,29 +3,32 @@ class Routes {
   static const REGISTER = '/register';
   static const FORGOT_PASSWORD = '/forgot_password';
   static const PHONE_VERIFICATION = '/phone_verification';
-
+  static const EMAIL_VERIFICATION = '/Email_verification';
   static const ROOT = '/root';
   static const RATING = '/rating';
   static const CHAT = '/chat';
-
+  static const AlbumCreate = '/AlbumCreate';
+  static const Portfolio_View_All_ForBusniss = '/PortfolioViewAllForBusniss';
   static const SETTINGS = '/settings';
-  static const CERTIFICATEEDIT = '/CertificateEdit';
   static const SETTINGS_THEME_MODE = '/settings/theme_mode';
   static const SETTINGS_LANGUAGE = '/settings/language';
   static const PROFILE = '/profile';
+  static const Edit_Portfolio_View = '/EditPortfolioView';
   static const Edit_Portfolio = '/EditPortfolio';
+  static const CERTIFICATEEDIT = '/CertificateEdit';
   static const Edit_SubAlbum = '/EditSubAlbum';
+  static const Edit_SubAlbum_View = '/EditSubAlbumView';
   static const View_SubAlbum = '/viewSubAlbum';
   static const Portfolio = '/portfolio';
   static const Portfolio_view = '/Portfolio_View';
   static const PortfolioAlbum = '/portfolio&album';
-  static const AlbumCreate = '/AlbumCreate';
   static const PortfolioAlbumView = '/PortfolioAndAlbumView';
   static const Albums = '/albums';
-  static const Certificates = '/CertificatesCreate';
-  static const CertificatesView = '/Certificates_View';
+  static const CertificatesView = '/certificatesView';
+  static const Certificates = '/certificates';
   // static const Album = '/album.dart';
   static const E_SERVICES = '/e-services';
+  static const Album_View_All_ForBusniss = '/AlbumViewAllForBusniss';
   static const Edit_Album = '/AlbumEdit';
   static const E_SERVICE = '/e-service';
   static const E_SERVICE_FORM = '/e-service-form';
@@ -67,4 +70,5 @@ class Routes {
   static const WALLET_FORM = '/wallet_form';
   static const PACKAGES = '/packages';
   static const SUBSCRIPTIONS = '/subscriptions';
+  static const TermsAndCondition = '/terms_&_condition';
 }

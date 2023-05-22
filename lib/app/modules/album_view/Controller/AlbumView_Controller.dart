@@ -26,7 +26,7 @@ class AlbumViewController extends GetxController {
   @override
   void onInit() {
     var arguments = Get.arguments as Map<String, dynamic>;
-    index.value = arguments['index'];
+    // index.value = arguments[('index')];
     print("check index value ${index.value}");
     print("this is running in album");
     isEditable.value = false;
@@ -56,7 +56,7 @@ class AlbumViewController extends GetxController {
     try {
       for (int i = 0; i < selectedListPortfolio.length; i++) {
         print("selected list portfolio");
-        print(selectedListPortfolio[i].id);
+        Get.log('============>>>>>>>>>${selectedListPortfolio[i].id}');
         await _eProviderRepository
             .deletePortfolioImage(selectedListPortfolio[i].id);
       }

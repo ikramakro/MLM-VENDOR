@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:get/get.dart';
+import 'package:home_services_provider/app/modules/AlbumCreate/View/AlbumCreate.dart';
 
 import '../../../routes/app_routes.dart';
 import '../Controller/AlbumView_Controller.dart';
@@ -90,8 +91,8 @@ class AlbumView extends GetView<AlbumViewController> {
                     itemCount: controller.album.length,
                     scrollDirection: Axis.vertical,
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 3,
-                        mainAxisExtent: 130,
+                        crossAxisCount: 2,
+                        mainAxisExtent: 135,
                         crossAxisSpacing: 7.0,
                         mainAxisSpacing: 5.0),
                     itemBuilder: (context, index) {
@@ -104,11 +105,16 @@ class AlbumView extends GetView<AlbumViewController> {
                         onTap: () {
                           print(
                               "this is the Album of image ${controller.album[index].images}");
+                          var _media = controller.album.elementAt(index);
                           controller.isEditable.isFalse
                               ? Get.toNamed(Routes.View_SubAlbum, arguments: {
                                   'album': controller.album[index].images,
                                   'hero': 'AlbumView',
-                                  'eProvider': controller.eProvider.value
+                                  'eProvider': controller.eProvider.value,
+                                  'albumname': controller.album[index].name,
+                                  'gallery': controller.album[index],
+                                  'media': controller.album,
+                                  'current': _media,
                                 })
                               : Get.offAndToNamed(Routes.Edit_Album,
                                   arguments: {
@@ -140,8 +146,10 @@ class AlbumView extends GetView<AlbumViewController> {
                                 ),
                               ),
                             ),
-                            Text(controller.album[index].name)
-                                .paddingOnly(top: 5)
+                            Expanded(
+                              child: Text(controller.album[index].name)
+                                  .paddingOnly(top: 5),
+                            )
                           ],
                         ),
                       );

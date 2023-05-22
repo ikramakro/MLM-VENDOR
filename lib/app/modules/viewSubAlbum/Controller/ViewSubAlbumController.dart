@@ -1,11 +1,16 @@
 import 'package:get/get.dart';
 
 import '../../../../common/ui.dart';
+import '../../../models/Album1_Model.dart';
 import '../../../models/album_model2.dart';
 import '../../../models/e_provider_model.dart';
+import '../../../models/media_model.dart';
 import '../../../repositories/e_provider_repository.dart';
 
 class ViewSubAlbumsController extends GetxController {
+  final media = <AlbumModel1>[].obs;
+  final current = AlbumModel1().obs;
+  final galleries = Media().obs;
   final eProvider = EProvider().obs;
   // final subAlbums = <SubAlbum>[].obs;
   final album = <AlbumModelNew2>[].obs;
@@ -13,6 +18,7 @@ class ViewSubAlbumsController extends GetxController {
   final currentSlide = 0.obs;
   EProviderRepository _eProviderRepository;
   final session = Get.arguments as Map<String, dynamic>;
+  final images = [].obs;
   ViewSubAlbumsController() {
     _eProviderRepository = new EProviderRepository();
   }
@@ -25,6 +31,10 @@ class ViewSubAlbumsController extends GetxController {
     album.value = session['album'];
     heroTag.value = session['hero'] as String;
     eProvider.value = session['eProvider'] as EProvider;
+    // galleries.value = session['gallery'] as AlbumModel1;
+    media.assignAll(session['media'] as List<AlbumModel1>);
+    current.value = session['current'] as AlbumModel1;
+
     print("check this out");
     print(album.value.toString());
     refreshEProvider();

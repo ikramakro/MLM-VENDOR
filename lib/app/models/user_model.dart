@@ -11,7 +11,7 @@ import 'role_model.dart';
 class User extends Model {
   String name;
   String email;
-
+  String oldPassword;
   String password;
   Media avatar;
   String apiToken;
@@ -29,6 +29,7 @@ class User extends Model {
   User(
       {this.name,
       this.email,
+      this.oldPassword,
       this.password,
       this.apiToken,
       this.deviceToken,
@@ -69,7 +70,9 @@ class User extends Model {
     data['id'] = this.id;
     data['name'] = this.name;
     data['email'] = this.email;
-
+    if (oldPassword != null && oldPassword != '') {
+      data['oldPassword'] = this.oldPassword;
+    }
     if (password != null && password != '') {
       data['password'] = this.password;
     }

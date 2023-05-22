@@ -57,8 +57,8 @@ class EProviderAvailabilityFormView
               Expanded(
                 child: MaterialButton(
                   onPressed: () async {
-                    Get.offNamedUntil(Routes.E_PROVIDERS,
-                        (route) => route.settings.name == Routes.E_PROVIDERS);
+                    Get.offNamedUntil(Routes.E_PROVIDER,
+                        (route) => route.settings.name == Routes.E_PROVIDER);
                   },
                   padding: EdgeInsets.symmetric(horizontal: 30, vertical: 12),
                   shape: RoundedRectangleBorder(
@@ -101,13 +101,13 @@ class EProviderAvailabilityFormView
                     index: Text("2",
                         style: TextStyle(color: Get.theme.primaryColor)),
                   ),
-                  // StepWidget(
-                  //   title: Text(
-                  //     "Availability".tr,
-                  //   ),
-                  //   index: Text("3",
-                  //       style: TextStyle(color: Get.theme.primaryColor)),
-                  // ),
+                  StepWidget(
+                    title: Text(
+                      "Availability".tr,
+                    ),
+                    index: Text("3",
+                        style: TextStyle(color: Get.theme.primaryColor)),
+                  ),
                 ],
               ),
               Text("Availability hours details".tr,

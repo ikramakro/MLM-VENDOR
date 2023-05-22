@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../../common/ui.dart';
+import '../../../models/Album1_Model.dart';
 import '../../../models/album_model2.dart';
 import '../../../models/e_provider_model.dart';
 import '../../../models/media_model.dart';
@@ -13,6 +14,10 @@ import '../../../repositories/upload_repository.dart';
 import '../../../routes/app_routes.dart';
 
 class EditSubAlbumController extends GetxController {
+  final media = <AlbumModelNew2>[].obs;
+  final current = AlbumModelNew2().obs;
+  final galleries = AlbumModelNew2().obs;
+
   GlobalKey<FormState> portfolioEditForm;
   var user = new User().obs;
   final editable = false.obs;
@@ -57,6 +62,8 @@ class EditSubAlbumController extends GetxController {
 
   @override
   void onInit() {
+    // media.value = null;
+    // current.value = null;
     // subAlbum.value = AlbumModelNew2();
     print("edit chal gaya ${subAlbum.value}");
     var arguments = Get.arguments as Map<String, dynamic>;
@@ -64,6 +71,11 @@ class EditSubAlbumController extends GetxController {
     print(subAlbum.value);
     heroTag.value = arguments['hero'] as String;
     eProvider.value = arguments['eProvider'] as EProvider;
+    // galleries.value = arguments['gallery'].value as AlbumModelNew2;
+    media.assignAll(arguments['media'] as List<AlbumModelNew2>);
+    // media.value = arguments['media'] as List<AlbumModelNew2>;
+    current.value = arguments['current'] as AlbumModelNew2;
+
     // print("this is calling every time");
     super.onInit();
   }

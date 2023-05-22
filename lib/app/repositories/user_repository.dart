@@ -34,6 +34,12 @@ class UserRepository {
     return _laravelApiClient.updateUser(user);
   }
 
+  Future<bool> checkOldPassword(String password) {
+    Get.log('User repo Checking Old Passord ');
+    _laravelApiClient = Get.find<LaravelApiClient>();
+    return _laravelApiClient.checkOldPassword(password);
+  }
+
   Future<bool> sendResetLinkEmail(User user) {
     _laravelApiClient = Get.find<LaravelApiClient>();
     return _laravelApiClient.sendResetLinkEmail(user);
@@ -62,14 +68,14 @@ class UserRepository {
     return _laravelApiClient.getUserPhone(num);
   }
 
-  Future<bool> signInWithEmailAndPassword(String email, String password) async {
-    _firebaseProvider = Get.find<FirebaseProvider>();
-    return _firebaseProvider.signInWithEmailAndPassword(email, password);
-  }
-
   Future<String> checkEmail(String email) {
     _laravelApiClient = Get.find<LaravelApiClient>();
     return _laravelApiClient.getUserEmail(email);
+  }
+
+  Future<bool> signInWithEmailAndPassword(String email, String password) async {
+    _firebaseProvider = Get.find<FirebaseProvider>();
+    return _firebaseProvider.signInWithEmailAndPassword(email, password);
   }
 
   Future<bool> signUpWithEmailAndPassword(String email, String password) async {
