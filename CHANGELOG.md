@@ -1,6 +1,7 @@
 # Changelog
 
 ## Unreleased
+- 2024-07-22: docs(db): fix pagination offset
 - 2024-05-14: feat(ui): add session handling
 - 2023-10-23: Fix race condition
 - 2023-03-31: Adjust API response format
